@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOSAIC | 自分だけの収入設計を、見つけよう。</title>
+    <meta name="description" content="7つの質問に答えるだけで、あなたの「収入スタイル×生き方スタイル」を診断。今すぐ始められるアクションと具体的な収入目安を提示する、収入ポートフォリオ設計サービス。">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Optional Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0b1121;
+            --bg-gradient: radial-gradient(circle at top center, #1e293b 0%, #0b1121 100%);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-color: #1A7FBD;
+            --accent-gradient: linear-gradient(135deg, #38bdf8 0%, #1A7FBD 100%);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --font-jp: 'Noto Sans JP', sans-serif;
+            --font-en: 'Montserrat', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-jp);
+            background: var(--bg-gradient);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        header {
+            padding: 2rem 5%;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+
+        .logo {
+            font-family: var(--font-en);
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 8rem 5% 4rem;
+            position: relative;
+        }
+
+        /* Abstract background decorative blobs */
+        .blob-1 {
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 400px;
+            height: 400px;
+            background: #1A7FBD;
+            border-radius: 50%;
+            filter: blur(150px);
+            opacity: 0.15;
+            z-index: 0;
+        }
+
+        .blob-2 {
+            position: absolute;
+            bottom: 10%;
+            right: 10%;
+            width: 300px;
+            height: 300px;
+            background: #38bdf8;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.15;
+            z-index: 0;
+        }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 1000px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .hero {
+            margin-bottom: 5rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.3;
+            letter-spacing: 0.02em;
+        }
+
+        .hero p {
+            font-size: clamp(1rem, 2vw, 1.1rem);
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 5rem;
+            text-align: left;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+
+        .feature-desc {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .cta-section {
+            margin-bottom: 2rem;
+        }
+
+        .coming-soon-badge {
+            display: inline-block;
+            background: rgba(26, 127, 189, 0.1);
+            color: #38bdf8;
+            border: 1px solid rgba(26, 127, 189, 0.3);
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            box-shadow: 0 4px 20px rgba(26, 127, 189, 0.15);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-family: var(--font-en);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.4s; }
+        .delay-4 { transition-delay: 0.5s; }
+        .delay-5 { transition-delay: 0.6s; }
+
+        @media (max-width: 768px) {
+            .hero h1 { margin-bottom: 1rem; }
+            .features { gap: 1.5rem; }
+            .feature-card { padding: 2rem 1.5rem; }
+            .coming-soon-badge { padding: 0.8rem 2rem; font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="blob-1"></div>
+    <div class="blob-2"></div>
+
+    <header>
+        <div class="logo">MOSAIC</div>
+    </header>
+
+    <main>
+        <div class="content-wrapper">
+            <section class="hero">
+                <h1 class="fade-in">自分だけの収入設計を、<br>見つけよう。</h1>
+                <p class="fade-in delay-1">7つの質問に答えるだけで、あなたの「収入スタイル×生き方スタイル」を診断。今すぐ始められるアクションと具体的な収入目安を提示する、収入ポートフォリオ設計サービス。</p>
+            </section>
+
+            <section class="features">
+                <div class="feature-card fade-in delay-2">
+                    <i class="fa-solid fa-stopwatch feature-icon"></i>
+                    <h3 class="feature-title">3分で診断完了</h3>
+                    <p class="feature-desc">直感的な7つの質問に答えるだけで、あなたに最適な収入ポートフォリオがすぐに分かります。</p>
+                </div>
+                <div class="feature-card fade-in delay-3">
+                    <i class="fa-solid fa-chart-pie feature-icon"></i>
+                    <h3 class="feature-title">具体的な収入数値を表示</h3>
+                    <p class="feature-desc">理想のライフスタイル実現に向けた、現実的な目標金額と到達までのロードマップを提示します。</p>
+                </div>
+                <div class="feature-card fade-in delay-4">
+                    <i class="fa-solid fa-users feature-icon"></i>
+                    <h3 class="feature-title">全年代・全ライフスタイル対応</h3>
+                    <p class="feature-desc">学生からシニアまで、一人ひとりの現状や価値観にフィットした柔軟な提案を行います。</p>
+                </div>
+            </section>
+
+            <section class="cta-section fade-in delay-5">
+                <div class="coming-soon-badge">
+                    2026年4月下旬 リリース予定
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2026 MOSAIC
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const fadeElements = document.querySelectorAll('.fade-in');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: "0px 0px -50px 0px"
+            });
+
+            fadeElements.forEach(element => {
+                observer.observe(element);
+            });
+        });
+    </script>
+</body>
+</html>
