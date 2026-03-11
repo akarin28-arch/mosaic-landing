@@ -80,15 +80,6 @@ export default function SproutPage() {
     if (!result) return;
     const text = `【SPROUT診断】\n私のキャリアフェーズは「${result.phaseEmoji} ${result.phaseName}」でした！\n\nあなたも診断してみては？`;
     const url = 'https://www.mosaic-design.jp/apps/sprout';
-    if (typeof navigator !== 'undefined' && navigator.share) {
-      try {
-        await navigator.share({ title: 'SPROUT キャリア診断', text, url });
-        return;
-      } catch {
-        // キャンセルや非対応の場合はXへフォールバック
-      }
-    }
-    // フォールバック：X（Twitter）でシェア
     const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text + '\n')}&url=${encodeURIComponent(url)}`;
     window.open(xUrl, '_blank', 'noopener,noreferrer');
   }
