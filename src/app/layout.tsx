@@ -16,7 +16,7 @@ const montserrat = Montserrat({
 
 export const metadata: Metadata = {
   title: "MOSAIC | 自分だけの収入設計を、見つけよう。",
-  description: "7つの質問に答えるだけで、あなたの「収入スタイル×生き方スタイル」を診断。今すぐ始められるアクションと具体的な収入目安を提示する、収入ポートフォリオ設計サービス。",
+  description: "8つの質問に答えるだけで、あなたの「収入スタイル×生き方スタイル」を診断。今すぐ始められるアクションと具体的な収入目安を提示する、収入ポートフォリオ設計サービス。",
   other: {
     "impact-site-verification": "3c2b4438-eb0b-45bd-86fb-4e46306197e0",
   },
@@ -30,6 +30,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
       </head>
       <body

@@ -46,14 +46,12 @@ export default function Home() {
         }
 
         .logo {
-          font-family: var(--font-en);
-          font-size: 1.8rem;
-          font-weight: 700;
-          letter-spacing: 0.1em;
-          background: var(--accent-gradient);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          display: inline-block;
+          display: inline-flex;
+          align-items: center;
+        }
+        .logo img {
+          height: 32px;
+          width: auto;
         }
 
         main {
@@ -73,10 +71,10 @@ export default function Home() {
           left: 10%;
           width: 400px;
           height: 400px;
-          background: #1A7FBD;
+          background: #3B82F6;
           border-radius: 50%;
           filter: blur(150px);
-          opacity: 0.15;
+          opacity: 0.10;
           z-index: 0;
         }
 
@@ -86,10 +84,10 @@ export default function Home() {
           right: 10%;
           width: 300px;
           height: 300px;
-          background: #38bdf8;
+          background: #10B981;
           border-radius: 50%;
-          filter: blur(120px);
-          opacity: 0.15;
+          filter: blur(150px);
+          opacity: 0.10;
           z-index: 0;
         }
 
@@ -141,7 +139,7 @@ export default function Home() {
 
         .feature-card:hover {
           transform: translateY(-5px);
-          border-color: rgba(56, 189, 248, 0.3);
+          border-color: rgba(59, 130, 246, 0.4);
         }
 
         .feature-icon {
@@ -168,15 +166,15 @@ export default function Home() {
 
         .coming-soon-badge {
           display: inline-block;
-          background: rgba(26, 127, 189, 0.1);
-          color: #38bdf8;
-          border: 1px solid rgba(26, 127, 189, 0.3);
+          background: rgba(59, 130, 246, 0.15);
+          color: #3B82F6;
+          border: 1px solid rgba(59, 130, 246, 0.4);
           padding: 1rem 2.5rem;
           border-radius: 50px;
           font-size: 1.1rem;
           font-weight: 700;
           letter-spacing: 0.05em;
-          box-shadow: 0 4px 20px rgba(26, 127, 189, 0.15);
+          box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
         }
 
         footer {
@@ -218,31 +216,31 @@ export default function Home() {
       <div className="blob-2"></div>
 
       <header>
-        <div className="logo">MOSAIC</div>
+        <div className="logo"><img src="/logo.svg" alt="MOSAIC" /></div>
       </header>
 
       <main>
         <div className="content-wrapper">
           <section className="hero">
             <h1 className="fade-in" ref={setRef}>自分だけの収入設計を、<br />見つけよう。</h1>
-            <p className="fade-in delay-1" ref={setRef}>7つの質問に答えるだけで、あなたの「収入スタイル×生き方スタイル」を診断。今すぐ始められるアクションと具体的な収入目安を提示する、収入ポートフォリオ設計サービス。</p>
+            <p className="fade-in delay-1" ref={setRef}>8つの質問に答えるだけで、あなたの「収入スタイル×生き方スタイル」を診断。今すぐ始められるアクションと具体的な収入目安を提示する、収入ポートフォリオ設計サービス。</p>
           </section>
 
           <section className="features">
             <div className="feature-card fade-in delay-2" ref={setRef}>
               <i className="fa-solid fa-stopwatch feature-icon"></i>
               <h3 className="feature-title">3分で診断完了</h3>
-              <p className="feature-desc">直感的な7つの質問に答えるだけで、あなたに最適な収入ポートフォリオがすぐに分かります。</p>
+              <p className="feature-desc">直感的な8つの質問に答えるだけで、あなたに最適な収入ポートフォリオがすぐに分かります。</p>
             </div>
             <div className="feature-card fade-in delay-3" ref={setRef}>
               <i className="fa-solid fa-chart-pie feature-icon"></i>
-              <h3 className="feature-title">具体的な収入数値を表示</h3>
+              <h3 className="feature-title">生き方と直結する収入設計</h3>
               <p className="feature-desc">理想のライフスタイル実現に向けた、現実的な目標金額と到達までのロードマップを提示します。</p>
             </div>
             <div className="feature-card fade-in delay-4" ref={setRef}>
               <i className="fa-solid fa-users feature-icon"></i>
-              <h3 className="feature-title">全年代・全ライフスタイル対応</h3>
-              <p className="feature-desc">学生からシニアまで、一人ひとりの現状や価値観にフィットした柔軟な提案を行います。</p>
+              <h3 className="feature-title">多様なライフスタイルに対応</h3>
+              <p className="feature-desc">それぞれの一人ひとりの現状や価値観にフィットした柔軟な提案を行います。</p>
             </div>
           </section>
 
