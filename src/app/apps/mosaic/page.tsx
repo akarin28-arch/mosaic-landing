@@ -591,6 +591,10 @@ export default function MOSAICDesignEngine() {
                 )}
 
                 {renderBreadcrumbs()}
+
+                <div style={{ textAlign: "center", paddingBottom: 20, paddingTop: 40, fontSize: 12, color: COLORS.textMuted }}>
+                    Operated by <a href="https://mosaic-design.jp" style={{ color: COLORS.textMuted, textDecoration: "underline" }}>Mosaic Design</a>
+                </div>
             </div>
         );
     }
@@ -628,6 +632,10 @@ export default function MOSAICDesignEngine() {
                 </button>
 
                 {renderTargetBreadcrumbs()}
+
+                <div style={{ textAlign: "center", paddingBottom: 20, paddingTop: 40, fontSize: 12, color: COLORS.textMuted }}>
+                    Operated by <a href="https://mosaic-design.jp" style={{ color: COLORS.textMuted, textDecoration: "underline" }}>Mosaic Design</a>
+                </div>
             </div>
         );
     }
