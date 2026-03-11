@@ -4,26 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MOSAIC | 自分だけの収入設計を、見つけよう。</title>
-    <meta name="description" content="7つの質問に答えるだけで、あなたの「収入スタイル×生き方スタイル」を診断。今すぐ始められるアクションと具体的な収入目安を提示する、収入ポートフォリオ設計サービス。">
+    <meta name="description" content="8つの質問に答えるだけで、あなたの「収入スタイル×生き方スタイル」を診断。今すぐ始められるアクションと具体的な収入目安を提示する、収入ポートフォリオ設計サービス。">
+    <meta name='impact-site-verification' value='3c2b4438-eb0b-45bd-86fb-4e46306197e0'>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Optional Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --bg-color: #0b1121;
-            --bg-gradient: radial-gradient(circle at top center, #1e293b 0%, #0b1121 100%);
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent-color: #1A7FBD;
-            --accent-gradient: linear-gradient(135deg, #38bdf8 0%, #1A7FBD 100%);
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --card-border: rgba(255, 255, 255, 0.08);
+            --bg-color: #060E1A;
+            --bg-gradient: radial-gradient(circle at top center, #0D1B2A 0%, #060E1A 100%);
+            --text-main: #E0E6ED;
+            --text-muted: #8899AA;
+            --accent-color: #3B82F6;
+            --accent-gradient: linear-gradient(135deg, #10B981 0%, #3B82F6 100%);
+            --card-bg: #0D1B2A;
+            --card-border: #1B2D45;
             --font-jp: 'Noto Sans JP', sans-serif;
             --font-en: 'Montserrat', sans-serif;
         }
@@ -56,14 +58,12 @@
         }
 
         .logo {
-            font-family: var(--font-en);
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+        }
+        .logo img {
+            height: 32px;
+            width: auto;
         }
 
         main {
@@ -83,10 +83,10 @@
             left: 10%;
             width: 400px;
             height: 400px;
-            background: #1A7FBD;
+            background: #3B82F6;
             border-radius: 50%;
             filter: blur(150px);
-            opacity: 0.15;
+            opacity: 0.10;
             z-index: 0;
         }
 
@@ -96,10 +96,10 @@
             right: 10%;
             width: 300px;
             height: 300px;
-            background: #38bdf8;
+            background: #10B981;
             border-radius: 50%;
-            filter: blur(120px);
-            opacity: 0.15;
+            filter: blur(150px);
+            opacity: 0.10;
             z-index: 0;
         }
 
@@ -151,7 +151,7 @@
 
         .feature-card:hover {
             transform: translateY(-5px);
-            border-color: rgba(56, 189, 248, 0.3);
+            border-color: rgba(59, 130, 246, 0.4);
         }
 
         .feature-icon {
@@ -178,15 +178,15 @@
 
         .coming-soon-badge {
             display: inline-block;
-            background: rgba(26, 127, 189, 0.1);
-            color: #38bdf8;
-            border: 1px solid rgba(26, 127, 189, 0.3);
+            background: rgba(59, 130, 246, 0.15);
+            color: #3B82F6;
+            border: 1px solid rgba(59, 130, 246, 0.4);
             padding: 1rem 2.5rem;
             border-radius: 50px;
             font-size: 1.1rem;
             font-weight: 700;
             letter-spacing: 0.05em;
-            box-shadow: 0 4px 20px rgba(26, 127, 189, 0.15);
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
         }
 
         footer {
@@ -230,31 +230,31 @@
     <div class="blob-2"></div>
 
     <header>
-        <div class="logo">MOSAIC</div>
+        <div class="logo"><img src="logo.svg" alt="MOSAIC"></div>
     </header>
 
     <main>
         <div class="content-wrapper">
             <section class="hero">
                 <h1 class="fade-in">自分だけの収入設計を、<br>見つけよう。</h1>
-                <p class="fade-in delay-1">7つの質問に答えるだけで、あなたの「収入スタイル×生き方スタイル」を診断。今すぐ始められるアクションと具体的な収入目安を提示する、収入ポートフォリオ設計サービス。</p>
+                <p class="fade-in delay-1">8つの質問に答えるだけで、あなたの「収入スタイル×生き方スタイル」を診断。今すぐ始められるアクションと具体的な収入目安を提示する、収入ポートフォリオ設計サービス。</p>
             </section>
 
             <section class="features">
                 <div class="feature-card fade-in delay-2">
                     <i class="fa-solid fa-stopwatch feature-icon"></i>
                     <h3 class="feature-title">3分で診断完了</h3>
-                    <p class="feature-desc">直感的な7つの質問に答えるだけで、あなたに最適な収入ポートフォリオがすぐに分かります。</p>
+                    <p class="feature-desc">直感的な8つの質問に答えるだけで、あなたに最適な収入ポートフォリオがすぐに分かります。</p>
                 </div>
                 <div class="feature-card fade-in delay-3">
                     <i class="fa-solid fa-chart-pie feature-icon"></i>
-                    <h3 class="feature-title">具体的な収入数値を表示</h3>
+                    <h3 class="feature-title">生き方と直結する収入設計</h3>
                     <p class="feature-desc">理想のライフスタイル実現に向けた、現実的な目標金額と到達までのロードマップを提示します。</p>
                 </div>
                 <div class="feature-card fade-in delay-4">
                     <i class="fa-solid fa-users feature-icon"></i>
-                    <h3 class="feature-title">全年代・全ライフスタイル対応</h3>
-                    <p class="feature-desc">学生からシニアまで、一人ひとりの現状や価値観にフィットした柔軟な提案を行います。</p>
+                    <h3 class="feature-title">多様なライフスタイルに対応</h3>
+                    <p class="feature-desc">それぞれの一人ひとりの現状や価値観にフィットした柔軟な提案を行います。</p>
                 </div>
             </section>
 
