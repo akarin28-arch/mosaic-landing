@@ -311,7 +311,7 @@ export default function GuidePage({ id }: { id: string }) {
             </div>
 
             <div style={{ textAlign: "center", paddingBottom: 20, paddingTop: 10, fontSize: 12, color: COLORS.textMuted }}>
-                &copy; Mosaic Design
+                Operated by <a href="https://mosaic-design.jp" style={{ color: COLORS.textMuted, textDecoration: "underline" }}>Mosaic Design</a>
             </div>
         </div>
     );

@@ -526,6 +526,7 @@ export default function MOSAICDesignEngine() {
                 <div style={{ textAlign: "center", marginBottom: 28 }}>
                     <div style={{ fontSize: 11, letterSpacing: 3, color: COLORS.textMuted, marginBottom: 4 }}>MOSAIC</div>
                     <div style={{ fontSize: 18, fontWeight: 700 }}>収入ポートフォリオ診断</div>
+                    <div style={{ fontSize: 12, color: COLORS.textMuted, marginTop: 4, opacity: 0.8 }}>自分だけの収入設計を、見つけよう。</div>
                     <div style={{ marginTop: 12, display: "flex", gap: 4, justifyContent: "center" }}>
                         {QUESTIONS.map((_, i) => (
                             <div key={i} style={{
@@ -601,6 +602,7 @@ export default function MOSAICDesignEngine() {
                 <div style={{ textAlign: "center", marginBottom: 28 }}>
                     <div style={{ fontSize: 11, letterSpacing: 3, color: COLORS.textMuted, marginBottom: 4 }}>MOSAIC</div>
                     <div style={{ fontSize: 18, fontWeight: 700 }}>収入ポートフォリオ診断</div>
+                    <div style={{ fontSize: 12, color: COLORS.textMuted, marginTop: 4, opacity: 0.8 }}>自分だけの収入設計を、見つけよう。</div>
                 </div>
                 <div style={cardStyle}>
                     <div style={{ fontSize: 12, color: COLORS.textMuted, marginBottom: 6 }}>最後の質問</div>
@@ -985,7 +987,7 @@ export default function MOSAICDesignEngine() {
                 </div>
 
                 <div style={{ textAlign: "center", paddingBottom: 20, paddingTop: 10, fontSize: 12, color: COLORS.textMuted }}>
-                    &copy; Mosaic Design
+                    Operated by <a href="https://mosaic-design.jp" style={{ color: COLORS.textMuted, textDecoration: "underline" }}>Mosaic Design</a>
                 </div>
             </div>
         );
