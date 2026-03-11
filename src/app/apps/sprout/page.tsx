@@ -100,7 +100,7 @@ export default function SproutPage() {
           <div className="screen active">
             <div className="app-badge">sprout</div>
             <div className="hero-icon">🌱</div>
-            <div className="top-title">今の自分、<br /><span>どのフェーズ？</span></div>
+            <div className="top-title">いまの自分、<br /><span>どのフェーズ？</span></div>
             <div className="top-desc">6つの質問に答えるだけ。今のあなたに合った、3日分のアクションをお届けします。</div>
             <div className="tag-row">
               <span className="tag">⏱ 約1分</span>
