@@ -525,8 +525,8 @@ export default function MOSAICDesignEngine() {
             <div style={containerStyle}>
                 <div style={{ textAlign: "center", marginBottom: 28 }}>
                     <div style={{ fontSize: 11, letterSpacing: 3, color: COLORS.textMuted, marginBottom: 4 }}>MOSAIC</div>
+                    <div style={{ fontSize: 12, color: COLORS.textMuted, marginBottom: 4, opacity: 0.8 }}>自分だけの収入設計を、見つけよう。</div>
                     <div style={{ fontSize: 18, fontWeight: 700 }}>収入ポートフォリオ診断</div>
-                    <div style={{ fontSize: 12, color: COLORS.textMuted, marginTop: 4, opacity: 0.8 }}>自分だけの収入設計を、見つけよう。</div>
                     <div style={{ marginTop: 12, display: "flex", gap: 4, justifyContent: "center" }}>
                         {QUESTIONS.map((_, i) => (
                             <div key={i} style={{
@@ -546,7 +546,8 @@ export default function MOSAICDesignEngine() {
                     pointerEvents: isTransitioning ? "none" : "auto", // トランジション中の連続クリック防止
                 }}>
                     <div style={{ fontSize: 12, color: COLORS.textMuted, marginBottom: 6 }}>
-                        Q{currentQ + 1} / {QUESTIONS.length}　─　{q.role}
+                        Q{currentQ + 1} / {QUESTIONS.length}
+                        <span style={{ opacity: 0.1, marginLeft: 8 }}>─ {q.role}</span>
                     </div>
                     <div style={{ fontSize: 17, fontWeight: 600, marginBottom: 18 }}>{q.text}</div>
                     {q.options.map((opt, idx) => {
@@ -601,8 +602,8 @@ export default function MOSAICDesignEngine() {
             <div style={containerStyle}>
                 <div style={{ textAlign: "center", marginBottom: 28 }}>
                     <div style={{ fontSize: 11, letterSpacing: 3, color: COLORS.textMuted, marginBottom: 4 }}>MOSAIC</div>
+                    <div style={{ fontSize: 12, color: COLORS.textMuted, marginBottom: 4, opacity: 0.8 }}>自分だけの収入設計を、見つけよう。</div>
                     <div style={{ fontSize: 18, fontWeight: 700 }}>収入ポートフォリオ診断</div>
-                    <div style={{ fontSize: 12, color: COLORS.textMuted, marginTop: 4, opacity: 0.8 }}>自分だけの収入設計を、見つけよう。</div>
                 </div>
                 <div style={cardStyle}>
                     <div style={{ fontSize: 12, color: COLORS.textMuted, marginBottom: 6 }}>最後の質問</div>
