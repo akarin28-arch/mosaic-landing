@@ -23,7 +23,7 @@ const refLinks: Record<string, { name:string; service:string; desc:string; btn:s
   mid: [
     { name:"副業・複業向けスキル講座", service:"Udemy", desc:"副業やスキルアップに役立つ講座が多数。今のスキルを試すきっかけに。", btn:"講座を見る", url:"https://www.udemy.com/" },
     { name:"フリーランス向けマッチングを知る", service:"Lancers", desc:"今のスキルを副業で試すなら参考になるサービス。眺めるだけでもOK。", btn:"見てみる", url:"https://www.lancers.jp/" },
-    { name:"キャリア相談ができるサービス", service:"ミートキャリア", desc:"転職を急かさずにキャリアの悩みを一緒に整理してくれる。まず話すだけでもOK。", btn:"詳細を見る", url:"https://meetcareer.net/" }
+    { name:"キャリア相談ができるサービス", service:"ミートキャリア", desc:"転職を急かさずにキャリアの悩みを一緒に整理してくれる。まず話すだけでもOK。", btn:"詳細を見る", url:"https://www.meetcareer.net/" }
   ],
   late: [
     { name:"転職サイトを見てみる", service:"doda", desc:"今すぐ転職しなくてもOK。求人の傾向を知るだけで、準備の精度が上がる。", btn:"見てみる", url:"https://doda.jp/" },
