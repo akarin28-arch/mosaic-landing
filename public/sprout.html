@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>sprout</title>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #f0faf4;
+  --mint: #3ecf8e;
+  --mint-light: #d0f4e5;
+  --mint-dark: #1fa86d;
+  --sage: #a8d5b5;
+  --yellow: #ffe566;
+  --coral: #ff7f6b;
+  --text: #1a2e24;
+  --text-mid: #4a6858;
+  --text-light: #8aab97;
+  --white: #ffffff;
+  --radius: 20px;
+  --radius-sm: 12px;
+}
+html, body { min-height: 100vh; background: var(--bg); font-family: 'Zen Maru Gothic', sans-serif; color: var(--text); overflow-x: hidden; }
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(circle 500px at 90% 10%, rgba(62,207,142,0.12) 0%, transparent 70%),
+    radial-gradient(circle 400px at 10% 80%, rgba(168,213,181,0.2) 0%, transparent 60%),
+    radial-gradient(circle 300px at 50% 50%, rgba(255,229,102,0.07) 0%, transparent 60%);
+  pointer-events: none;
+}
+.blob { position: fixed; z-index: 0; border-radius: 50%; filter: blur(60px); opacity: 0.18; pointer-events: none; }
+.blob-1 { width: 300px; height: 300px; background: var(--mint); top: -80px; right: -60px; }
+.blob-2 { width: 200px; height: 200px; background: var(--yellow); bottom: 10%; left: -40px; }
+.blob-3 { width: 180px; height: 180px; background: var(--sage); top: 40%; right: -30px; }
+.screen { width: 100%; display: none; flex-direction: column; align-items: center; }
+.screen.active { display: flex; animation: popIn 0.45s cubic-bezier(0.34,1.56,0.64,1) both; }
+@keyframes popIn { from { opacity: 0; transform: scale(0.94) translateY(10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+/* TOP */
+.app-badge { background: transparent; color: var(--mint-dark); font-size: 13px; font-weight: 700; letter-spacing: 0.12em; margin-bottom: 32px; }
+.hero-icon { width: 96px; height: 96px; background: var(--white); border-radius: 28px; display: flex; align-items: center; justify-content: center; font-size: 44px; margin-bottom: 28px; box-shadow: 0 8px 32px rgba(62,207,142,0.2), 0 2px 8px rgba(0,0,0,0.06); }
+.top-title { font-size: 28px; font-weight: 900; line-height: 1.4; text-align: center; margin-bottom: 12px; letter-spacing: -0.01em; }
+.top-title span { background: linear-gradient(135deg, var(--mint-dark), var(--mint)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.top-desc { font-size: 14px; color: var(--text-mid); line-height: 1.8; text-align: center; margin-bottom: 40px; max-width: 300px; }
+.tag-row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 40px; }
+.tag { background: var(--mint-light); color: var(--mint-dark); font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 99px; }
+.start-btn { width: 100%; background: var(--mint); color: white; border: none; padding: 18px; border-radius: var(--radius); font-family: 'Zen Maru Gothic', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; letter-spacing: 0.05em; box-shadow: 0 6px 24px rgba(62,207,142,0.35); transition: all 0.2s; }
+.start-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(62,207,142,0.45); }
+.time-note { margin-top: 14px; font-size: 12px; color: var(--text-light); }
+
+/* QUIZ */
+.quiz-top { width: 100%; margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; }
+.step-label { font-size: 12px; color: var(--text-light); font-weight: 700; letter-spacing: 0.1em; white-space: nowrap; }
+.prog-track { flex: 1; height: 6px; background: var(--mint-light); border-radius: 99px; margin: 0 14px; overflow: hidden; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--mint-dark), var(--mint)); border-radius: 99px; transition: width 0.4s cubic-bezier(0.34,1.2,0.64,1); }
+.q-card { width: 100%; background: var(--white); border-radius: var(--radius); padding: 28px 24px; margin-bottom: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+.q-emoji { font-size: 32px; margin-bottom: 12px; display: block; }
+.q-text { font-size: 17px; font-weight: 700; line-height: 1.55; }
+.choices { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+.choice-btn { width: 100%; background: var(--white); border: 2px solid transparent; border-radius: var(--radius-sm); padding: 15px 18px; font-family: 'Zen Maru Gothic', sans-serif; font-size: 14px; font-weight: 500; color: var(--text); cursor: pointer; text-align: left; display: flex; align-items: center; gap: 12px; transition: all 0.15s; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+.choice-dot { width: 20px; height: 20px; min-width: 20px; border: 2px solid var(--mint-light); border-radius: 50%; transition: all 0.15s; display: flex; align-items: center; justify-content: center; }
+.choice-btn:hover { border-color: var(--mint); background: var(--mint-light); transform: translateX(4px); }
+.choice-btn:hover .choice-dot { border-color: var(--mint); background: var(--mint); }
+.choice-btn.selected { border-color: var(--mint); background: var(--mint-light); }
+.choice-btn.selected .choice-dot { border-color: var(--mint-dark); background: var(--mint-dark); }
+.choice-btn.selected .choice-dot::after { content: '✓'; font-size: 11px; color: white; font-weight: 700; }
+
+/* LOADING */
+#screen-loading { text-align: center; }
+.loading-card { background: var(--white); border-radius: var(--radius); padding: 48px 32px; width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.06); display: flex; flex-direction: column; align-items: center; }
+.loading-plant { font-size: 56px; margin-bottom: 24px; animation: grow 1.2s ease-in-out infinite alternate; }
+@keyframes grow { from { transform: scale(0.9); } to { transform: scale(1.1); } }
+.loading-title { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+.loading-sub { font-size: 13px; color: var(--text-mid); margin-bottom: 28px; }
+.loading-dots { display: flex; gap: 8px; }
+.ld { width: 10px; height: 10px; border-radius: 50%; background: var(--mint-light); }
+.ld:nth-child(1) { animation: bounce 1s 0s infinite; }
+.ld:nth-child(2) { animation: bounce 1s 0.15s infinite; }
+.ld:nth-child(3) { animation: bounce 1s 0.3s infinite; }
+@keyframes bounce { 0%,80%,100% { background: var(--mint-light); transform: scale(1); } 40% { background: var(--mint); transform: scale(1.4); } }
+
+/* RESULT */
+.result-badge { background: var(--yellow); color: var(--text); font-size: 12px; font-weight: 700; padding: 6px 16px; border-radius: 99px; margin-bottom: 20px; letter-spacing: 0.05em; }
+.phase-card { width: 100%; background: var(--white); border-radius: var(--radius); padding: 28px 24px; margin-bottom: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); position: relative; overflow: hidden; }
+.phase-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--mint-dark), var(--mint), var(--yellow)); }
+.phase-label { font-size: 11px; color: var(--text-light); font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 10px; display: block; }
+.phase-name { font-size: 22px; font-weight: 900; color: var(--mint-dark); margin-bottom: 14px; line-height: 1.3; }
+.phase-name em { font-style: normal; background: var(--mint-light); padding: 2px 8px; border-radius: 6px; }
+.phase-advice { font-size: 14px; color: var(--text-mid); line-height: 1.85; padding: 14px 16px; background: var(--bg); border-radius: var(--radius-sm); border-left: 3px solid var(--mint); }
+/* 追加：フェーズ理由文 */
+.phase-reason { font-size: 13px; font-weight: 700; color: var(--text-mid); margin-bottom: 12px; line-height: 1.5; }
+.days-title { width: 100%; font-size: 13px; font-weight: 700; color: var(--text-mid); letter-spacing: 0.1em; text-transform: uppercase; margin: 6px 0 12px; display: flex; align-items: center; gap: 8px; }
+.days-title::after { content: ''; flex: 1; height: 1px; background: var(--mint-light); }
+/* 追加：3日アクション説明文 */
+.days-desc { font-size: 13px; color: var(--text-mid); line-height: 1.6; margin-bottom: 16px; width: 100%; }
+/* 追加：参考リンクセクション */
+.ref-section { width: 100%; margin-top: 16px; margin-bottom: 16px; animation: popIn 0.5s 0.7s ease both; opacity: 0; animation-fill-mode: both; }
+.ref-title-bar { width: 100%; font-size: 13px; font-weight: 700; color: var(--text-mid); letter-spacing: 0.1em; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.ref-title-bar::after { content: ''; flex: 1; height: 1px; background: var(--mint-light); }
+.ref-intro { font-size: 13px; color: var(--text-mid); line-height: 1.6; margin-bottom: 16px; }
+.ref-card { width: 100%; background: var(--white); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
+.ref-card-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.ref-card-service { font-size: 11px; color: var(--mint-dark); font-weight: 700; margin-bottom: 6px; }
+.ref-card-desc { font-size: 12px; color: var(--text-light); line-height: 1.5; margin-bottom: 12px; }
+.ref-btn { background: var(--mint-light); color: var(--mint-dark); text-align: center; text-decoration: none; padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 700; transition: all 0.2s; display: block; }
+.ref-btn:hover { background: var(--mint); color: var(--white); }
+.ref-disclosure { font-size: 10px; color: var(--text-light); text-align: right; margin-top: 8px; }
+.day-card { width: 100%; background: var(--white); border-radius: var(--radius-sm); padding: 18px 20px; margin-bottom: 10px; display: flex; gap: 16px; align-items: flex-start; box-shadow: 0 2px 12px rgba(0,0,0,0.05); animation: slideIn 0.5s ease both; }
+.day-card:nth-child(1) { animation-delay: 0.1s; }
+.day-card:nth-child(2) { animation-delay: 0.25s; }
+.day-card:nth-child(3) { animation-delay: 0.4s; }
+@keyframes slideIn { from { opacity: 0; transform: translateX(-12px); } to { opacity: 1; transform: translateX(0); } }
+.day-num-badge { min-width: 40px; height: 40px; background: var(--mint-light); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; color: var(--mint-dark); letter-spacing: 0.05em; line-height: 1.2; }
+.day-num-badge strong { font-size: 16px; }
+.day-content { flex: 1; }
+.day-action { font-size: 14px; font-weight: 700; line-height: 1.5; margin-bottom: 4px; }
+.day-hint { font-size: 12px; color: var(--text-light); line-height: 1.6; }
+.result-actions { width: 100%; display: flex; gap: 10px; margin-top: 16px; animation: popIn 0.5s 0.9s ease both; opacity: 0; animation-fill-mode: both; }
+.btn-share { flex: 1.6; background: var(--mint); color: white; border: none; padding: 16px; border-radius: var(--radius-sm); font-family: 'Zen Maru Gothic', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 16px rgba(62,207,142,0.3); transition: all 0.2s; }
+.btn-share:hover { transform: translateY(-2px); }
+.btn-retry { flex: 1; background: transparent; color: var(--text-mid); border: 2px solid var(--mint-light); padding: 16px; border-radius: var(--radius-sm); font-family: 'Zen Maru Gothic', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+.btn-retry:hover { border-color: var(--mint); color: var(--mint-dark); background: var(--mint-light); }
+.share-note { font-size: 11px; color: var(--text-light); text-align: center; margin-top: 10px; animation: popIn 0.5s 1.1s ease both; opacity: 0; animation-fill-mode: both; }
+.global-footer { position: fixed; bottom: 0; left: 0; right: 0; text-align: center; padding: 12px 20px; font-size: 11px; color: var(--text-light); background: linear-gradient(to top, var(--bg) 60%, transparent); z-index: 10; }
+.global-footer a { color: var(--mint-dark); text-decoration: none; font-weight: 500; }
+.global-footer a:hover { text-decoration: underline; }
+.app { position: relative; z-index: 1; max-width: 420px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 48px 24px 60px; }
+</style>
+</head>
+<body>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+<div class="app">
+
+  <!-- TOP -->
+  <div class="screen active" id="screen-top">
+    <div class="app-badge">sprout</div>
+    <div class="hero-icon">🌱</div>
+    <div class="top-title">今の自分、<br><span>どのフェーズ？</span></div>
+    <div class="top-desc">6つの質問に答えるだけ。今のあなたに合った、3日分のアクションをお届けします。</div>
+    <div class="tag-row">
+      <span class="tag">⏱ 約1分</span>
+      <span class="tag">🎯 6問だけ</span>
+      <span class="tag">✨ 無料</span>
+    </div>
+    <button class="start-btn" onclick="startQuiz()">診断スタート →</button>
+    <div class="time-note">📋 回答はすべて選択式です</div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="screen" id="screen-quiz">
+    <div class="quiz-top">
+      <span class="step-label" id="step-label">1 / 6</span>
+      <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:16%"></div></div>
+    </div>
+    <div id="quiz-body"></div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="screen" id="screen-loading">
+    <div class="loading-card">
+      <div class="loading-plant">🌿</div>
+      <div class="loading-title">あなたのフェーズを診断中…</div>
+      <div class="loading-sub">回答をもとに最適なアクションを選んでいます</div>
+      <div class="loading-dots"><div class="ld"></div><div class="ld"></div><div class="ld"></div></div>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="screen" id="screen-result">
+    <div class="result-badge">✨ 診断結果</div>
+    <div class="phase-card" id="phase-card"></div>
+    <div class="days-title">3日間のアクション</div>
+    <!-- 追加：3日アクション説明文 -->
+    <div class="days-desc">まずは大きな決断をする必要はありません。最初の3日間でできる、小さな行動を提案します。</div>
+    <div id="day-cards" style="width:100%"></div>
+    <!-- 追加：参考リンクセクション -->
+    <div class="ref-section">
+      <div class="ref-title-bar">参考リンク</div>
+      <div class="ref-intro">キャリアや働き方について考え始めた人向けに、参考になりそうな情報をいくつか置いておきます。気になるものがあれば、軽く覗いてみてください。</div>
+      <div id="ref-links" style="width:100%"></div>
+      <div class="ref-disclosure">※一部リンクは紹介リンクを含みます</div>
+    </div>
+    <div class="result-actions">
+      <button class="btn-share">📤 結果をシェアする</button>
+      <button class="btn-retry" onclick="restart()">もう一度</button>
+    </div>
+    <div class="share-note">「これ当たってた」ってなったらぜひシェアを 🌱</div>
+  </div>
+
+</div>
+<div class="global-footer">Operated by <a href="https://mosaic-design.jp">Mosaic Design</a></div>
+<script>
+// ─── 質問（6問、各0〜3点、合計0〜18点）───
+const questions = [
+  {
+    emoji: "😮‍💨",
+    text: "最近、仕事について感じていることは？",
+    choices: [
+      "今のままで十分満足している",
+      "特に不満はないけど、なんとなくモヤっとする",
+      "やりがいが少し薄れてきた気がする",
+      "もっと自分らしい働き方がしたい"
+    ],
+    scores: [0, 1, 2, 3]
+  },
+  {
+    emoji: "🕐",
+    text: "キャリアについて考える頻度は？",
+    choices: [
+      "ほとんど考えていない",
+      "たまに考える程度",
+      "週に数回は考える",
+      "毎日のように頭にある"
+    ],
+    scores: [0, 1, 2, 3]
+  },
+  {
+    emoji: "💪",
+    text: "自分のスキルや経験、整理できていますか？",
+    choices: [
+      "考えたことがなかった",
+      "自信がない部分も多い",
+      "なんとなくはわかってる",
+      "ちゃんと言語化できている"
+    ],
+    scores: [0, 1, 2, 3]
+  },
+  {
+    emoji: "🔭",
+    text: "1年後の理想のイメージは？",
+    choices: [
+      "あまり考えていない",
+      "考え中でまだぼんやり",
+      "なんとなくのイメージはある",
+      "具体的にイメージできている"
+    ],
+    scores: [0, 1, 2, 3]
+  },
+  {
+    emoji: "🔍",
+    text: "求人や他社の情報を見ることはありますか？",
+    choices: [
+      "まったく見ていない",
+      "たまに気になったときだけ",
+      "月に数回チェックしている",
+      "定期的にチェックしている"
+    ],
+    scores: [0, 1, 2, 3]
+  },
+  {
+    emoji: "🗣",
+    text: "キャリアについて、人に話したり相談したことは？",
+    choices: [
+      "まったくない",
+      "家族や友人にちらっと話したことがある",
+      "信頼できる人に相談したことがある",
+      "複数人に相談したり情報収集している"
+    ],
+    scores: [0, 1, 2, 3]
+  }
+];
+
+// ─── フェーズ定義（9種類）───
+const phases = [
+  {
+    range: [0, 2],
+    name: "完全ニュートラル期",
+    emoji: "🌰",
+    reason: "あなたは「まだキャリアへの強い不満や関心は芽生えていない」傾向があります。",
+    advice: "今のあなたはキャリアへの関心がまだ薄い状態。それ自体は悪くありません。ただ、「何も考えなかった」という後悔を防ぐために、まず自分の仕事を少し外から眺めてみることをおすすめします。",
+    category: "early"
+  },
+  {
+    range: [3, 4],
+    name: "じっくり熟成期",
+    emoji: "🍂",
+    reason: "あなたは「今の状況に納得しつつも、自分の可能性を少し探し始めている」傾向があります。",
+    advice: "今のあなたは現状に大きな不満はないけれど、何かが静かに動き出している状態。焦る必要はありません。まず自分の「好き・得意・嫌い」を書き出すだけで、意外な発見が生まれます。",
+    category: "early"
+  },
+  {
+    range: [5, 6],
+    name: "もやもや芽生え期",
+    emoji: "🌤",
+    reason: "あなたは「『このままでいいのかな』という疑問が、少しずつ育ってきている」傾向があります。",
+    advice: "今のあなたは「このままでいいのかな」という感覚が少しずつ育ってきている状態。そのもやもやは、変化の前兆です。まずは自分の気持ちを言葉にするところから始めてみましょう。",
+    category: "early"
+  },
+  {
+    range: [7, 8],
+    name: "もやもや充電期",
+    emoji: "⛅",
+    reason: "あなたは「変化への意識が高まっているのに、なかなか行動に移せていない」傾向があります。",
+    advice: "今のあなたは変化への意識が高まっているのに、なかなか行動に移せていない状態。まず「自分の棚卸し」をすることで、霧が晴れてきます。小さな一歩が、大きな流れを生みます。",
+    category: "mid"
+  },
+  {
+    range: [9, 10],
+    name: "じわじわ助走期",
+    emoji: "🌿",
+    reason: "あなたは「行動力はあり、次のステップへ進むきっかけを探している」傾向があります。",
+    advice: "今のあなたは行動力はあるのに、動き出すきっかけを探している状態。情報収集のクセをつけることで、自然に次が見えてきます。焦らず、毎日少しずつ動き続けることが大切です。",
+    category: "mid"
+  },
+  {
+    range: [11, 12],
+    name: "本格助走期",
+    emoji: "🍃",
+    reason: "あなたは「変わりたいという意志が固まり、具体的な行動へと移りつつある」傾向があります。",
+    advice: "今のあなたは「変わりたい」という意志がかなり固まってきています。あとは具体的なアクションに落とし込むだけ。自分の強みを言語化して、次の一手をイメージしてみましょう。",
+    category: "mid"
+  },
+  {
+    range: [13, 14],
+    name: "準備開始期",
+    emoji: "🌱",
+    reason: "あなたは「キャリアの方向性が見え始め、着実に行動準備を始めている」傾向があります。",
+    advice: "今のあなたはキャリアの方向性がぼんやり見えてきた状態。あとは準備を着実に積み重ねるだけです。履歴書・職務経歴書・ポートフォリオ、どれか一つから手をつけてみましょう。",
+    category: "late"
+  },
+  {
+    range: [15, 16],
+    name: "準備完了・動きどき",
+    emoji: "🚀",
+    reason: "あなたは「これまでの棚卸しや理想のイメージが整い、今すぐ行動すべき」傾向があります。",
+    advice: "今のあなたはキャリアの棚卸しも、理想のイメージも整ってきています。あとは「具体的な行動」に移すだけ。考えすぎず、小さな一歩から動いていきましょう。",
+    category: "late"
+  },
+  {
+    range: [17, 18],
+    name: "全速前進期",
+    emoji: "⚡",
+    reason: "あなたは「準備も意欲も十分に整っており、迷いなくチャレンジできる」傾向があります。",
+    advice: "今のあなたは準備も意欲も整っています。迷いを手放して、どんどん動くタイミングです。情報収集から一歩進んで、実際にコンタクトを取ったり応募したりと、攻めの行動を意識してみましょう。",
+    category: "late"
+  }
+];
+
+// ─── アクションプール（各フェーズ30個）───
+const actionPools = {
+  0: [ // 完全ニュートラル期
+    { action: "今の仕事で「楽しい瞬間」を1つ思い出してみる", hint: "記憶にある小さな喜びが、自分の強みのヒントになる" },
+    { action: "好きな仕事・苦手な仕事を3つずつ紙に書く", hint: "頭の中を整理するだけで、意外な発見がある" },
+    { action: "尊敬している人の働き方を1つ観察してみる", hint: "ロールモデルを見つけることが最初の一歩になる" },
+    { action: "「5年後の理想の1日」を30秒だけ妄想してみる", hint: "正解じゃなくていい。想像するだけでOK" },
+    { action: "今日の仕事で「これはできた」を1つ見つける", hint: "小さな自信の積み重ねが、動く力になる" },
+    { action: "仕事以外で「夢中になれること」を1つ書き出す", hint: "趣味や関心がキャリアの種になることがある" },
+    { action: "職場で「この人みたいになりたい」と思う人を1人決める", hint: "明確なモデルがあると、行動が具体的になる" },
+    { action: "今の仕事の「良いところ」を3つ書き出す", hint: "不満より先に、今あるものを確認する" },
+    { action: "朝の通勤中に「今日やってみたいこと」を1つ考える", hint: "小さな目標が、仕事への関心を育てる" },
+    { action: "今週中に新しい業務を1つ自分から引き受けてみる", hint: "受け身から主体的になるだけで景色が変わる" },
+    { action: "同僚と昼食をとりながら「仕事の話」を少ししてみる", hint: "人の話から自分の価値観が浮かび上がることがある" },
+    { action: "職場で「ありがとう」を1回だけ意識して伝える", hint: "関係性を良くすると、仕事の満足度も上がる" },
+    { action: "今日帰宅したら「今日よかったこと」を1行だけメモする", hint: "ポジティブな視点を育てる小さなルーティン" },
+    { action: "自分の「得意なこと」を友人に1つ聞いてみる", hint: "他者からの視点は、自己評価より正確なことがある" },
+    { action: "図書館やネットで「働き方」に関する本を1冊探す", hint: "読まなくてもいい。タイトルを眺めるだけでもヒントになる" },
+    { action: "今の仕事で「もっとこうしたい」を1つ考える", hint: "不満ではなく「改善への意欲」として捉えてみる" },
+    { action: "昨年と今年を比べて「成長したこと」を1つ挙げる", hint: "自分の変化に気づくことが、次のステップの自信になる" },
+    { action: "好きなYouTuberやインフルエンサーの職業を調べてみる", hint: "「あの人の仕事はなんだろう」が職業への興味に変わることがある" },
+    { action: "職場で「一番の得意技」は何かを考えてみる", hint: "あなたにとって当たり前なことが、他人には価値になっている" },
+    { action: "今日の仕事後に「疲れた理由」を1行書いてみる", hint: "疲れのパターンを知ると、自分に合う仕事のヒントが見える" },
+    { action: "「将来やってみたい仕事」を1つだけ考えてみる", hint: "現実的かどうかは後で考えればいい" },
+    { action: "職場の外で「この人面白い」と思う人に連絡してみる", hint: "刺激は外からやってくることが多い" },
+    { action: "今週末に「仕事と関係ない趣味」を1時間だけやる", hint: "リフレッシュが、仕事への新鮮な視点を生む" },
+    { action: "自分の名前で検索して、ネット上の情報を確認する", hint: "今の自分の「外からの見え方」を知る最初のステップ" },
+    { action: "「もし今の仕事がなくなったら」を5秒だけ想像してみる", hint: "軽いシミュレーションが、現状の見え方を変えることがある" },
+    { action: "今日誰かに「自分の仕事の説明」を一言でしてみる", hint: "うまく説明できないなら、棚卸しのタイミングかもしれない" },
+    { action: "職場で「最近楽しそうだな」と思う人を観察する", hint: "他人の楽しみ方から、自分のヒントが見つかることがある" },
+    { action: "今の職場に入った理由を1分で振り返る", hint: "「なぜここを選んだか」に、自分の価値観が詰まっている" },
+    { action: "気になるポッドキャストやYouTubeを1本だけ聴く", hint: "ながら聴きでOK。情報を取り込む習慣の入口に" },
+    { action: "今週の「やりたくなかった仕事」を1つ思い出す", hint: "嫌いなことを知ると、好きなことが浮かび上がる" }
+  ],
+  1: [ // じっくり熟成期
+    { action: "好きな仕事・苦手な仕事を5つずつ書き出す", hint: "ざっくりでいい。書き出すことで頭が整理される" },
+    { action: "「もし職業を変えるとしたら」を3つ書いてみる", hint: "現実的かどうかは後で考えればいい" },
+    { action: "信頼できる人に「自分の強み」を1つ聞いてみる", hint: "他者の目線は自己評価より正確なことが多い" },
+    { action: "尊敬する人のキャリアを1つ調べてみる", hint: "たどってきた道が、自分の選択肢を広げてくれる" },
+    { action: "今の仕事の「好きなところ」「嫌いなところ」を書き出す", hint: "比較することで、自分が大切にしていることが見えてくる" },
+    { action: "「5年後の自分に手紙を書く」を1分でやってみる", hint: "完璧じゃなくていい。書き始めることに意味がある" },
+    { action: "今の会社以外で「働きたい場所」を1つ想像する", hint: "「もしも」の想像が、次の行動の種になる" },
+    { action: "仕事帰りに「今日一番充実した瞬間」を思い出す", hint: "充実感のパターンが、向いている仕事を教えてくれる" },
+    { action: "自分のスキルを5個書き出してみる（小さなものでOK）", hint: "スキルの可視化が、自己肯定感の回復につながる" },
+    { action: "今の仕事で「もっとこうしたい」を1つ挙げる", hint: "不満ではなく改善意欲として捉えると前向きになれる" },
+    { action: "自分が「楽しいと感じる仕事」の共通点を探す", hint: "共通点が「自分に合う環境」のヒントになる" },
+    { action: "職場の人に「やりがいを感じる瞬間はどんなとき？」と聞く", hint: "他人の答えが、自分の気づきを引き出してくれる" },
+    { action: "転職や副業をした知人に「何がきっかけだった？」を聞く", hint: "リアルな話ほど、参考になる情報はない" },
+    { action: "気になる業界や会社のニュースを1本だけ読む", hint: "5分でOK。情報感度を上げる小さな習慣" },
+    { action: "自分の「市場価値」についてぼんやり考えてみる", hint: "「自分は社外でも通用するか」は早めに考えておきたい問いだ" },
+    { action: "今の仕事の「給料」と「満足度」のバランスを考える", hint: "お金と幸福感のバランスが、次の判断基準になる" },
+    { action: "自分が「褒められたこと」を3つ思い出す", hint: "褒めらるポイントに、自分の強みが隠れている" },
+    { action: "1時間だけ完全に自分のための時間を作る", hint: "何もしない時間が、思考を整理してくれる" },
+    { action: "「やりたいことリスト」を10個書いてみる", hint: "仕事と関係なくていい。欲望を解放することが大切" },
+    { action: "朝の10分を「自分の未来を考える時間」に使ってみる", hint: "毎日10分の投資が、半年後に大きな差を生む" },
+    { action: "職場の「自分に合わない文化」を1つ挙げてみる", hint: "何が嫌かを知ることが、次の職場選びに役立つ" },
+    { action: "「今の自分をスコアで表すと？」を100点満点でつける", hint: "数字にすることで、自分の状態が客観視できる" },
+    { action: "週末に「新しいことを1つだけ体験する」計画を立てる", hint: "小さな新体験が、視野を広げてくれる" },
+    { action: "「自分がいなくなったら職場が困ること」を考えてみる", hint: "自分の存在価値を確認する、ちょっと怖い問い" },
+    { action: "「今の会社に入った自分の判断」を振り返る", hint: "当時の基準と今の基準の違いが、成長の証になる" },
+    { action: "自分が「続けてきたこと」を1つ書き出す", hint: "継続できていることに、自分の本当の強みがある" },
+    { action: "「仕事の悩み」を紙に1つだけ書いてみる", hint: "書き出すことで頭の中から出て、客観視できる" },
+    { action: "職場の外に「刺激になる人」を1人見つける", hint: "環境を変えなくても、人との出会いが視野を広げる" },
+    { action: "「転職や異動を考えたことがある」かを正直に自問する", hint: "答えが「ある」なら、その理由を1行書いてみる" },
+    { action: "今日の終わりに「明日試してみたいこと」を1つ考える", hint: "前向きな終わり方が、翌日のモチベーションを上げる" }
+  ],
+  2: [ // もやもや芽生え期
+    { action: "「もやもやしている理由」を3つ書き出してみる", hint: "言葉にすると、不安の正体が見えてくる" },
+    { action: "過去1年で「充実していた瞬間」を3つ思い出す", hint: "充実感の共通点に、自分の価値観が隠れている" },
+    { action: "「今の自分に足りないもの」を1つだけ考える", hint: "あれもこれもより、1つに絞る方が行動しやすい" },
+    { action: "気になっていた資格や勉強を1つ調べてみる", hint: "調べるだけでいい。始めるかどうかは後で考える" },
+    { action: "「これだけは外せない仕事の条件」を3つ書く", hint: "譲れない条件を知ることが、迷いを減らす" },
+    { action: "信頼できる人に「最近どう？」と話しかけてみる", hint: "話すことで、自分の気持ちが整理されることが多い" },
+    { action: "今の職場で「もっと活かせていない自分の能力」を考える", hint: "埋もれている強みが、次の舞台で輝く可能性がある" },
+    { action: "「10年後にやっていたい仕事」を3分だけ想像する", hint: "遠い未来を考えると、逆に今が明確になる" },
+    { action: "自分の「棚卸し」として、職歴を簡単にメモする", hint: "続けてきたことの中に、自分のキャリア軸がある" },
+    { action: "気になる会社やブランドのSNSをフォローしてみる", hint: "情報が自然に入ってくる環境を少しずつ作る" },
+    { action: "今の仕事を「他の人に説明するとしたら」を考える", hint: "うまく説明できないなら、棚卸しのサインかもしれない" },
+    { action: "「自分の仕事で感謝されたこと」を1つ思い出す", hint: "感謝された経験に、自分の市場価値のヒントがある" },
+    { action: "「収入以外の仕事の報酬」を考えてみる", hint: "やりがい・成長・人脈など、目に見えないものにも価値がある" },
+    { action: "職場以外のコミュニティに1つだけ顔を出してみる", hint: "異業種の人と話すと、自分の仕事が客観視できる" },
+    { action: "「副業や複業」に興味があるか正直に考えてみる", hint: "本業以外の収入源を探すのは、今や普通の発想だ" },
+    { action: "今の職場の「良いところ」を再確認してみる", hint: "隣の芝生は青く見える。今ある価値を再認識することも大切" },
+    { action: "「キャリア」という言葉に対するイメージを書き出す", hint: "自分のキャリア観を知ることが、次の選択に役立つ" },
+    { action: "「自分がいなくなった後も残るもの」を考える", hint: "長期視点が、仕事の意味を深めてくれる" },
+    { action: "SNSで「キャリア」「働き方」の投稿を5つ読む", hint: "他人の話から、自分の気持ちに気づくことがある" },
+    { action: "「今の仕事のストレス」を1つだけ紙に書き出す", hint: "書いて外に出すと、頭の中がすっきりする" },
+    { action: "「去年の自分に戻れるとしたら何を変える？」を考える", hint: "後悔ではなく、未来への学びとして捉える" },
+    { action: "今日「意識して褒める」を1回だけ実践してみる", hint: "与えることで、自分も満たされることがある" },
+    { action: "「自分が得意で、人の役に立てること」を1つ考える", hint: "この交差点に、あなたの価値がある" },
+    { action: "「あの人みたいな働き方をしてみたい」を1人決める", hint: "具体的なモデルがあると、行動の解像度が上がる" },
+    { action: "今の職場での「1年後のビジョン」を30秒で考える", hint: "今いる場所での成長と、外への移動の両方を比較してみる" },
+    { action: "「最近ときめいたニュース」を1つ思い出す", hint: "ときめく分野に、自分の興味の種がある" },
+    { action: "「働くことの意味」を1文で書いてみる", hint: "自分の言葉で書くことで、軸が見えてくる" },
+    { action: "今日の終わりに「よかったこと」を1つだけ書く", hint: "ポジティブな記録が、前向きな思考を育てる" },
+    { action: "「自分のキャリアに影響を与えた人」を1人思い出す", hint: "その人から学んだことが、今の自分の強みになっているかもしれない" },
+    { action: "「今のもやもやに名前をつける」としたら？と考える", hint: "名前をつけると、不安が少し手なずけられる" }
+  ],
+  3: [ // もやもや充電期
+    { action: "「今の仕事で変えたいこと」を5つ書き出す", hint: "不満を可視化することが、行動への第一歩になる" },
+    { action: "自分のスキルを3カテゴリに分けて整理してみる", hint: "ビジネス・専門・ヒューマンの3軸で考えると整理しやすい" },
+    { action: "「なぜ今の職場に入ったか」を1分で振り返る", hint: "当時の動機と今の気持ちのギャップに、答えが隠れている" },
+    { action: "転職・キャリアアップした知人に話を聞いてみる", hint: "リアルな体験談ほど、参考になる情報はない" },
+    { action: "「自分が本当にやりたい仕事」を3分で書き出す", hint: "現実的かどうかは後で考えればいい。まず出し切る" },
+    { action: "気になる職種の求人を1件だけ眺めてみる（応募不要）", hint: "どんな人材が求められているかを知るだけで視野が広がる" },
+    { action: "「自分の強みを3行でまとめる」を試してみる", hint: "完璧でなくていい。書いては直す、を繰り返す" },
+    { action: "LinkedInかWantedlyを1年ぶりに覗いてみる", hint: "どんなキャリアの選択肢があるかを眺めるだけでOK" },
+    { action: "「仕事でやっていて楽しいこと」を10個書き出す", hint: "10個書けなくても、書けただけ書く。それが宝になる" },
+    { action: "今月の「やりたいこと」を1つだけ決める", hint: "大きな目標より、小さな宣言の方が続きやすい" },
+    { action: "気になる業界の「市場規模」をさらっと調べてみる", hint: "数字で見ると、漠然とした興味が具体化する" },
+    { action: "「自分が評価される環境」と「今の職場」を比較してみる", hint: "環境のミスマッチが、モヤモヤの原因になっていることが多い" },
+    { action: "「副業でできそうなこと」を3つ考えてみる", hint: "本業のスキルが意外な形で副業になることがある" },
+    { action: "「1年後の理想の状態」を1文で書いてみる", hint: "短くていい。書くことで目標が具体化する" },
+    { action: "職場以外で「成長を感じる場所」を1つ探してみる", hint: "学びのスピードが上がる環境が、次のキャリアを生む" },
+    { action: "「自分の時間給」を計算してみる", hint: "残業を含めた実質時給を知ると、現状が客観視できる" },
+    { action: "「自分が尊敬されていると感じる場面」を思い出す", hint: "尊敬される場所が、自分の活躍できる環境のヒントになる" },
+    { action: "「3年後にやっていたい仕事」を書いてみる", hint: "3年は「現実的な未来」と「夢」のちょうど中間点" },
+    { action: "「今の職場でキャリアアップするとしたら何が必要か」を考える", hint: "今のまま上を目指すのかどうかの判断材料になる" },
+    { action: "「自分が一番成長した仕事の経験」を1つ書く", hint: "成長した環境のパターンが、次の場所選びに役立つ" },
+    { action: "「今の仕事で身についたスキル」を10個書き出す", hint: "小さなスキルでいい。数が増えると自信になる" },
+    { action: "転職エージェントのサイトを1つだけ登録して眺める", hint: "登録するだけでいい。情報の入り口を作ることが大切" },
+    { action: "「自分が本当に嫌いな仕事の要素」を3つ書く", hint: "嫌いなことを知ることが、好きな仕事への地図になる" },
+    { action: "「今の仕事をあと3年続けたら」を想像してみる", hint: "未来を想像することが、今の決断の判断軸になる" },
+    { action: "「自分のキャリアのターニングポイント」を1つ振り返る", hint: "転換点には、自分の価値観や選択の癖が表れている" },
+    { action: "「現状維持のリスク」を1つだけ考えてみる", hint: "変わらないことも、一つの選択と同じリスクがある" },
+    { action: "気になるセミナーやオンライン講座を1つ検索する", hint: "申し込まなくていい。どんな学びがあるか知るだけでOK" },
+    { action: "「自分の仕事を一言で表すとしたら」を考える", hint: "うまく表現できるかどうかが、棚卸しのバロメーターになる" },
+    { action: "「今の会社でしか得られない経験」を1つ挙げる", hint: "今いる場所の価値を確認することで、判断が冷静になる" },
+    { action: "「今の自分に必要な勇気」を1つだけ書いてみる", hint: "言葉にした勇気は、少しずつ育っていく" }
+  ],
+  4: [ // じわじわ助走期
+    { action: "「自分の強みを3行」でまとめてみる", hint: "完璧じゃなくていい。書いては直す作業が大事" },
+    { action: "気になる業界のニュースを1本だけ読む", hint: "5分でOK。情報感度を上げるルーティンに" },
+    { action: "LinkedInかWantedlyを覗いてみる", hint: "応募しなくていい。どんな機会があるか確認するだけ" },
+    { action: "転職した知人に「最近どう？」と一言送る", hint: "情報より、つながりが次のチャンスを連れてくる" },
+    { action: "「自分のキャリアの軸」を1文で書いてみる", hint: "短くていい。書くことで頭が整理される" },
+    { action: "気になる企業のホームページを1社見てみる", hint: "求人ページより「カルチャーページ」を先に読む" },
+    { action: "「今の自分に足りないスキル」を1つ特定する", hint: "一つに絞ることで、学ぶべきことが明確になる" },
+    { action: "「理想の働き方」を箇条書きで3つ書く", hint: "条件をリスト化すると、選択の判断軸ができる" },
+    { action: "「自分が活躍できそうな職種」を1つ考える", hint: "今の経験×強みで活躍できる場所が必ずある" },
+    { action: "「キャリア」に関するポッドキャストを1本聴く", hint: "ながら聴きでOK。インプットのクセをつける" },
+    { action: "自分の「仕事の実績」を1つだけ言語化してみる", hint: "「どんな成果を出したか」を数字で表現できると強い" },
+    { action: "「転職してよかった」という口コミをSNSで検索する", hint: "他人の体験が、自分の一歩を後押ししてくれる" },
+    { action: "「今の収入で満足しているか」を正直に考える", hint: "お金の不満は、行動の原動力になることがある" },
+    { action: "「もし100万円あったら何の勉強をするか」を考える", hint: "お金の制約を外すと、本当の興味が浮かび上がる" },
+    { action: "「自分の市場価値を上げるために今週できること」を1つ決める", hint: "小さくていい。決めたことを実行することが大切" },
+    { action: "「キャリアアップのロードマップ」を30分で描いてみる", hint: "完成させなくていい。描く過程で考えが整理される" },
+    { action: "「自分が評価されていると感じる職場の条件」を書く", hint: "評価される環境を知ることが、次の選択の基準になる" },
+    { action: "「転職や独立に不安なこと」を3つ書き出す", hint: "不安を書き出すと、乗り越え方が考えやすくなる" },
+    { action: "「自分のキャリアで一番誇れること」を1つ選ぶ", hint: "誇れる経験が、面接での強い武器になる" },
+    { action: "「5年後の自分への投資」として何かを1つ始める", hint: "本でも資格でも人脈でも、何でもいい" },
+    { action: "「働くうえで絶対に妥協できないこと」を3つ書く", hint: "軸が明確になると、迷いが減る" },
+    { action: "気になるオンラインコミュニティやSlackに1つ入る", hint: "コミュニティは、情報と人脈の両方をくれる" },
+    { action: "「今の職場をポジティブに退職するなら何年後？」を考える", hint: "タイムラインを持つことで、逆算した行動ができる" },
+    { action: "「自分の仕事の専門性」を一言で表現してみる", hint: "言語化できると、自己PRが格段に磨かれる" },
+    { action: "「今の自分を採用するとしたら何円か」を考えてみる", hint: "自分の市場価値を数字で想像することが大切" },
+    { action: "転職エージェントに1社だけ問い合わせてみる", hint: "情報収集のつもりで話を聞くだけでもOK" },
+    { action: "「今週中に誰かにキャリアの話をする」を宣言する", hint: "声に出すと、行動する確率が上がる" },
+    { action: "「今の自分が一番避けたい仕事環境」を3つ書く", hint: "嫌なことを排除した先に、理想の環境がある" },
+    { action: "「今の仕事に就いていなかった場合の自分」を想像する", hint: "別の自分を想像すると、今の選択が見えてくる" },
+    { action: "「キャリア相談できる人」を1人リストアップする", hint: "相談相手を決めておくだけで、動きやすくなる" }
+  ],
+  5: [ // 本格助走期
+    { action: "「自分の強み×市場ニーズ」を1つ考える", hint: "強みが市場と合わさるところに、チャンスがある" },
+    { action: "職務経歴書の下書きを1項目だけ書いてみる", hint: "全部書かなくていい。1項目から始めることが大事" },
+    { action: "「なぜキャリアを変えたいか」を1文で書く", hint: "動機が言語化できると、面接でも軸がブレない" },
+    { action: "気になる企業を3社リストアップする", hint: "まだ応募しなくていい。候補を作るだけでOK" },
+    { action: "「今の自分の弱点」を1つ特定して、対策を考える", hint: "弱点を放置するより、向き合う方が圧倒的に早い" },
+    { action: "転職した先輩に「一番大変だったこと」を聞く", hint: "リアルな苦労を知っておくと、心の準備ができる" },
+    { action: "「理想の職場の条件」を5つ書いてみる", hint: "条件を書くと、自分が何を大事にしているかがわかる" },
+    { action: "LinkedInのプロフィールを1行だけ更新する", hint: "少しずつ整えることで、機会が向こうからやってくる" },
+    { action: "「自分のスキルセットで挑戦できる職種」を3つ挙げる", hint: "今の経験は、思っているより多くの場所で活かせる" },
+    { action: "「転職活動にかけられる時間」を計算してみる", hint: "リソースを把握することが、現実的な計画に繋がる" },
+    { action: "「採用されやすい自己PR」を1バージョン考える", hint: "想定される質問への準備が、自信につながる" },
+    { action: "「今の年収」と「希望年収」の差を確認する", hint: "具体的な数字を持つことが、判断の基準になる" },
+    { action: "気になる企業の「社員の声」を3つ読む", hint: "採用情報よりリアルな情報が得られる" },
+    { action: "「もし転職に失敗したら」のリスクを整理する", hint: "最悪を想定すると、不思議と行動しやすくなる" },
+    { action: "業界の「平均年収」を1つ調べてみる", hint: "データで自分の立ち位置を確認することが大切" },
+    { action: "「副業でスキルを試す」という選択肢を考えてみる", hint: "転職前に副業でスキルを確かめる人が増えている" },
+    { action: "「自分がされた一番印象的な面接質問」を思い出す", hint: "過去の経験が、今後の準備に役立つ" },
+    { action: "「今の職場で完了させたいプロジェクト」を1つ決める", hint: "きれいに終わらせることが、次へのスタートになる" },
+    { action: "「キャリアに関する本」を1冊選んで購入する", hint: "本は最も安くて深い情報源のひとつ" },
+    { action: "「自分が選ぶ会社の判断基準」を3つ書く", hint: "判断基準を先に作ると、比較検討が楽になる" },
+    { action: "「転職活動の開始予定時期」を決めてみる", hint: "タイムラインがあると、逆算して準備できる" },
+    { action: "「今の職場でもらった一番嬉しい言葉」を思い出す", hint: "嬉しかった言葉に、自分の強みのヒントがある" },
+    { action: "「自分の名前でGoogle検索」して見え方を確認する", hint: "採用担当者も検索する時代。自分の見え方を知っておく" },
+    { action: "「自分が得意な仕事のプロセス」を1つ言語化する", hint: "プロセスの得意不得意が、職種選びの参考になる" },
+    { action: "「半年後に達成したい状態」を1文で書く", hint: "半年という期間は、変化を起こすのにちょうどいい" },
+    { action: "OB・OG訪問できそうな人を1人思い浮かべる", hint: "内部情報に勝る情報収集はない" },
+    { action: "「転職後の生活イメージ」を1分間想像してみる", hint: "具体的に想像できると、行動への抵抗が減る" },
+    { action: "「今持っているスキルで稼げる方法」を1つ考える", hint: "スキルの換金性を考えることが、市場価値の自覚につながる" },
+    { action: "「面接で話せる成功体験」を1つ整理する", hint: "STAR法（状況・課題・行動・結果）で整理すると伝わりやすい" },
+    { action: "「転職エージェント vs 自己応募」の違いを調べる", hint: "方法を知ることが、最初の一歩を踏み出しやすくする" }
+  ],
+  6: [ // 準備開始期
+    { action: "職務経歴書を1セクションだけ書いてみる", hint: "全部書こうとしない。今日は1つだけ完成させる" },
+    { action: "「自分のキャリアのハイライト3選」をまとめる", hint: "3つに絞ることで、強みが鮮明になる" },
+    { action: "「面接で話せる具体的なエピソード」を1つ整理する", hint: "数字で表現できる実績は特に強い武器になる" },
+    { action: "気になる企業の採用ページを2〜3社確認する", hint: "求める人物像を知ることが、準備の方向性を決める" },
+    { action: "「転職エージェントに登録する」を今週の目標にする", hint: "無料で使えるエージェントから始めるのが最初の一歩" },
+    { action: "「なぜこの会社を選ぶか」の答えを1社分考える", hint: "志望動機の解像度が上がると、自信につながる" },
+    { action: "「今の自分に必要なスキルアップ」を1つ特定する", hint: "転職後のギャップを事前に埋めておく準備が大切" },
+    { action: "「業界の動向」を1本記事で確認する", hint: "市場の流れを理解することが、判断を正確にする" },
+    { action: "「給与交渉で伝えたい実績」を1つ準備する", hint: "数字で語れる実績は、年収アップへの最短距離" },
+    { action: "写真を撮って、プロフィール写真を更新する", hint: "第一印象の7割は写真で決まると言われている" },
+    { action: "「今の会社に感謝できること」を3つ書く", hint: "前の職場への感謝が、次のキャリアを前向きにする" },
+    { action: "「転職後の最初の1ヶ月にやりたいこと」を考える", hint: "入社後のイメージを持つことで、目的意識が高まる" },
+    { action: "「自己PRを1分で話す練習」を1回だけやる", hint: "一人でやってもOK。話すと自分の言葉が定まる" },
+    { action: "「退職するなら何ヶ月前に伝えるか」を調べる", hint: "就業規則を確認しておくと、タイムラインが組みやすい" },
+    { action: "「キャリアの棚卸しシート」を検索して1つ試してみる", hint: "テンプレートを使うと、漏れなく整理できる" },
+    { action: "「今の職場を退職した後の生活費」を計算してみる", hint: "リアルな数字を把握することが、判断を冷静にする" },
+    { action: "「キャリアの方向性」を信頼できる人に話してみる", hint: "声に出すことで、考えが整理されることがある" },
+    { action: "「転職活動中の時間管理」について考えておく", hint: "仕事と並行して進める人が多い。スケジュール設計が鍵" },
+    { action: "「今の職場で残すべきキャリア資産」を確認する", hint: "プロジェクト・人脈・実績など、持ち出せる資産を整理" },
+    { action: "「業界のキーパーソン」をSNSでフォローしてみる", hint: "情報は人から流れてくる時代。先にアンテナを張っておく" },
+    { action: "「自分の仕事を誰かに引き継ぐとしたら」を考える", hint: "引き継ぎの準備が、きれいな退職への第一歩になる" },
+    { action: "「転職後の通勤」についてシミュレーションしてみる", hint: "生活の変化をリアルに想像することで、イメージが固まる" },
+    { action: "「今の収入と同等以上を稼ぐために必要なもの」を考える", hint: "逆算思考が、準備の優先順位を教えてくれる" },
+    { action: "「内定後に確認すべきこと」を1つ調べておく", hint: "契約書・待遇・入社日など、事前に知っておくと安心" },
+    { action: "「転職で絶対に避けたい企業の特徴」を3つ書く", hint: "ネガティブ条件の整理が、ミスマッチを防ぐ" },
+    { action: "「自分の仕事スタイル」を1つの言葉で表してみる", hint: "「私は〇〇なタイプです」が自然に言えるよう準備する" },
+    { action: "「今の自分ができる最大限のPR」を1分で考える", hint: "謙遜せずに、自分の価値を最大限に言語化してみる" },
+    { action: "「面接後にやること」を1つだけリスト化する", hint: "お礼メール・振り返りメモなど、準備しておくと動きやすい" },
+    { action: "「採用担当者の目線で自分の履歴書を読む」を試す", hint: "俯瞰的に見ることで、改善点が見えてくる" },
+    { action: "「転職を考えていることを最初に打ち明けられる人」を決める", hint: "相談できる人がいると、孤独な活動が少し楽になる" }
+  ],
+  7: [ // 準備完了・動きどき
+    { action: "職務経歴書を1項目だけアップデートする", hint: "全部やらなくていい。1行足すだけでも前進" },
+    { action: "気になる会社のカルチャーページを1社分読む", hint: "求人より先に「どんな会社か」を知るのが大事" },
+    { action: "転職した知人に近況を聞いてみる", hint: "情報より、つながりが次のチャンスを連れてくる" },
+    { action: "「1社だけ気になる求人に応募」を今週の目標にする", hint: "完璧な準備より、まず動くことの方が価値がある" },
+    { action: "「自己PR・志望動機」を声に出して練習する", hint: "黙読より、声に出すことで言葉が自分のものになる" },
+    { action: "転職エージェントと初回面談をセットする", hint: "プロの目線で、自分の価値を客観的に確認できる" },
+    { action: "「給与の希望レンジ」を具体的な数字で決める", hint: "数字で言えないと、交渉の土台が作れない" },
+    { action: "「今週中に書類を1社分仕上げる」を決める", hint: "期限を決めることで、完了率が大きく上がる" },
+    { action: "「面接でよく聞かれる質問」を5つ準備する", hint: "「なぜ転職？」「強み弱み」は必ず準備しておく" },
+    { action: "採用担当者目線で自分の書類を読み返す", hint: "相手の視点で見ると、改善点がすぐに見つかる" },
+    { action: "「希望業界の最新ニュース」を1本読む", hint: "業界の動向を話せると、面接で一歩抜きん出る" },
+    { action: "「最終的な転職の軸」を3つに絞る", hint: "軸が明確なほど、ブレない判断ができる" },
+    { action: "「転職後の最初の目標」を1つ設定してみる", hint: "入社後のビジョンを語れる人は、採用担当者の心に刺さる" },
+    { action: "「退職の伝え方」を1回シミュレーションする", hint: "心の準備があると、いざというときに落ち着ける" },
+    { action: "「緊急連絡先・保証人など」の情報を整理する", hint: "内定後に慌てないよう、事前に準備しておく" },
+    { action: "「入社日の希望と理由」を考えておく", hint: "入社時期の希望を明確にすると、交渉がスムーズになる" },
+    { action: "「転職後のキャリアパス」を1ステップだけ考える", hint: "入社後の成長イメージが面接でも説得力を生む" },
+    { action: "「面接で話せる失敗談と学び」を1つ準備する", hint: "失敗から学ぶ姿勢は、面接官に好印象を与える" },
+    { action: "「今週中に応募する企業を1社決める」と宣言する", hint: "声に出した約束は、行動に変わる確率が高い" },
+    { action: "「収入・やりがい・ライフスタイル」の優先順位を決める", hint: "3つのバランスを決めると、後悔しない選択ができる" },
+    { action: "「内定をもらった後の動き方」を考えておく", hint: "内定後の交渉・承諾期限など、事前に把握しておくと動きやすい" },
+    { action: "「転職エージェントに送る自己PR文」を1本書く", hint: "書くことで、自分の言葉が整理される" },
+    { action: "「同業他社」と「異業種」の求人を1件ずつ比較する", hint: "比較することで、自分が求めるものが鮮明になる" },
+    { action: "「入社後にやりたい具体的なプロジェクト」を1つ考える", hint: "熱量が伝わる面接は、記憶に残る" },
+    { action: "「転職活動の進め方」を紙に書いて可視化する", hint: "ステップが見えると、次の行動が明確になる" },
+    { action: "「転職後に手放していいこと」を1つ書く", hint: "変わることへの覚悟が、踏み出す力になる" },
+    { action: "「今の会社への感謝」を1文で書いてみる", hint: "前向きな卒業が、次のキャリアの土台になる" },
+    { action: "「3社に絞る基準」を今日中に決める", hint: "比較軸が明確だと、迷いなく前に進める" },
+    { action: "「転職成功のイメージ」を5秒だけ描いてみる", hint: "成功のイメージが先にあると、行動が変わる" },
+    { action: "「転職後に誰に一番報告したいか」を考える", hint: "喜ばせたい人の存在が、行動の原動力になる" }
+  ],
+  8: [ // 全速前進期
+    { action: "「今週中に1社応募する」を最優先タスクにする", hint: "完璧な準備より、まず動いた人が先に内定を得る" },
+    { action: "「応募企業への熱量を1分で話す練習」をする", hint: "熱量は準備で作れる。繰り返し練習が自信を生む" },
+    { action: "「現職より条件が良い求人」を今日3件見つける", hint: "比較対象があると、判断がスピードアップする" },
+    { action: "転職エージェントに連絡して活動状況を共有する", hint: "エージェントは動いている人に非公開求人を紹介する" },
+    { action: "「内定後の条件交渉リスト」を作っておく", hint: "年収・入社日・役職など、交渉できる項目を把握する" },
+    { action: "「今週の面接をどう振り返るか」の基準を決める", hint: "振り返りの習慣が、次の面接の質を上げる" },
+    { action: "「複数社の選考を並行して進める」体制を整える", hint: "1社に絞らず複数社受けることで、比較判断できる" },
+    { action: "「最終面接で聞かれそうな質問」を5つ準備する", hint: "最終面接は「一緒に働けるか」を見ている場。準備が勝負" },
+    { action: "「自分が会社を選ぶ目線で面接に臨む」を意識する", hint: "選ばれる側ではなく、選ぶ側の視点が余裕を生む" },
+    { action: "「入社後30日・90日・1年の目標」を考えておく", hint: "入社後のビジョンが語れると、採用担当者の心に刺さる" },
+    { action: "「内定先の企業文化」を現社員の口コミで確認する", hint: "入社後のミスマッチを防ぐ最後の確認作業" },
+    { action: "「現職に退職意向を伝えるタイミング」を考える", hint: "内定から逆算すると、最適なタイミングが見えてくる" },
+    { action: "「転職後の収支シミュレーション」を1回やる", hint: "生活費・税金・保険の変化をリアルに把握する" },
+    { action: "「入社前にやっておきたいこと」を3つ書く", hint: "有給消化・人脈作り・スキルアップなど先手を打つ" },
+    { action: "「転職で得たいもの」をもう一度言語化する", hint: "迷いが出たときの判断軸になる大切な作業" },
+    { action: "「断るべき求人の条件」を明確にしておく", hint: "NOと言える基準があると、迷わず動ける" },
+    { action: "「今週の活動を振り返って、改善点を1つ挙げる」", hint: "PDCAが回ると、転職活動の質が上がる" },
+    { action: "「内定後に確認すべき労働条件の項目」を調べる", hint: "契約書のチェックリストを持っておくと安心" },
+    { action: "「転職先の通勤経路を試しに歩いてみる」", hint: "イメージを現実に近づけることで、不安が減る" },
+    { action: "「今週中に1人にキャリアの話を聞いてもらう」を決める", hint: "話すことで整理される思考がある" },
+    { action: "「現職の良い部分を書き留めておく」", hint: "転職後も活かせる経験を記録しておくと、次に活きる" },
+    { action: "「内定承諾の期限管理」をカレンダーに入れる", hint: "期限を可視化することで、焦りなく動ける" },
+    { action: "「転職後の最初の1ヶ月の動き方」を考える", hint: "早期活躍のイメージを持つと、面接でも刺さる言葉が出る" },
+    { action: "「現職の退職手続きの流れ」を1回確認する", hint: "スムーズな退職が、次のスタートダッシュにつながる" },
+    { action: "「転職後も連絡を取り続けたい同僚」に一言かける", hint: "人脈は会社を離れた後の方が、価値を増すことがある" },
+    { action: "「自分が選んだ理由を面接で力強く語る練習」をする", hint: "納得して選んだストーリーが、面接官の心を動かす" },
+    { action: "「競合他社と志望企業の違い」を1つ言語化する", hint: "「なぜ御社か」への答えが、ぐっと深まる" },
+    { action: "「転職が完了した自分へのご褒美」を決める", hint: "楽しみがあると、活動の最後まで走りきれる" },
+    { action: "「今の活動状況を正直に振り返る」5分を作る", hint: "客観視することで、次のアクションが見えやすくなる" },
+    { action: "「転職先で最初に仲良くなりたい人のタイプ」を考える", hint: "入社後の人間関係をイメージすると、環境への適応が早まる" }
+  ]
+};
+
+let scores = [];
+let currentQ = 0;
+
+function startQuiz() {
+  showScreen('screen-quiz');
+  renderQ();
+}
+
+function renderQ() {
+  const q = questions[currentQ];
+  const pct = ((currentQ + 1) / questions.length) * 100;
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('step-label').textContent = `${currentQ + 1} / ${questions.length}`;
+  document.getElementById('quiz-body').innerHTML = `
+    <div class="q-card" style="animation:popIn 0.4s ease both">
+      <span class="q-emoji">${q.emoji}</span>
+      <div class="q-text">${q.text}</div>
+    </div>
+    <div class="choices">
+      ${q.choices.map((c, i) => `
+        <button class="choice-btn" onclick="pick(${i})">
+          <span class="choice-dot"></span>${c}
+        </button>`).join('')}
+    </div>`;
+}
+
+function pick(idx) {
+  document.querySelectorAll('.choice-btn').forEach((b, i) => {
+    b.classList.toggle('selected', i === idx);
+    b.onclick = null;
+  });
+  scores.push(questions[currentQ].scores[idx]);
+  setTimeout(() => {
+    currentQ++;
+    if (currentQ < questions.length) renderQ();
+    else showLoading();
+  }, 320);
+}
+
+function showLoading() {
+  showScreen('screen-loading');
+  setTimeout(showResult, 2200);
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ─── フェーズ別参考リンク ───
+const refLinks = {
+  early: [
+    { name: "キャリア入門講座", service: "Udemy", desc: "スキルや働き方について学びたい人向けの入門講座が充実。自分のペースで学べる。", btn: "講座を見る", url: "https://www.udemy.com/" },
+    { name: "キャリア・働き方コラムを読む", service: "doda", desc: "転職を考えていなくても参考になるキャリアコラムが豊富。情報として気軽に読んでみて。", btn: "見てみる", url: "https://doda.jp/guide/" },
+    { name: "働き方に関する記事を探す", service: "note", desc: "さまざまな人のキャリア体験談や働き方の考え方を読むだけでもヒントになる。", btn: "記事を見る", url: "https://note.com/" }
+  ],
+  mid: [
+    { name: "副業・複業向けスキル講座", service: "Udemy", desc: "副業やスキルアップに役立つ講座が多数。今のスキルを試すきっかけに。", btn: "講座を見る", url: "https://www.udemy.com/" },
+    { name: "フリーランス向けマッチングを知る", service: "Lancers", desc: "今のスキルを副業で試すなら参考になるサービス。眺めるだけでもOK。", btn: "見てみる", url: "https://www.lancers.jp/" },
+    { name: "キャリア相談ができるサービス", service: "ミートキャリア", desc: "転職を急かさずにキャリアの悩みを一緒に整理してくれる。まず話すだけでもOK。", btn: "詳細を見る", url: "https://meetcareer.net/" }
+  ],
+  late: [
+    { name: "転職サイトを見てみる", service: "doda", desc: "今すぐ転職しなくてもOK。求人の傾向を知るだけで、準備の精度が上がる。", btn: "見てみる", url: "https://doda.jp/" },
+    { name: "転職に直結するスキル講座", service: "Udemy", desc: "転職活動に役立つスキルを短期集中で学べる。面接前の準備にも活用できる。", btn: "講座を見る", url: "https://www.udemy.com/" },
+    { name: "転職エージェントに話を聞く", service: "マイナビエージェント", desc: "完全無料で使える転職エージェント。まず話を聞くだけでも、選択肢が広がる。", btn: "詳細を見る", url: "https://mynavi-agent.jp/" }
+  ]
+};
+
+function showResult() {
+  const total = scores.reduce((a, b) => a + b, 0);
+  const phase = phases.find(p => total >= p.range[0] && total <= p.range[1]) || phases[4];
+  const phaseIdx = phases.indexOf(phase);
+  const pool = actionPools[phaseIdx] || actionPools[4];
+  const picked = shuffle(pool).slice(0, 3);
+  const dayLabels = [['DAY', '1'], ['DAY', '2'], ['DAY', '3']];
+
+  // フェーズカード（理由文追加）
+  document.getElementById('phase-card').innerHTML = `
+    <span class="phase-label">あなたの今のキャリアフェーズ</span>
+    <div class="phase-name">${phase.emoji} <em>${phase.name}</em></div>
+    <div class="phase-reason">${phase.reason}</div>
+    <div class="phase-advice">${phase.advice}</div>`;
+
+  // 3日間アクションカード
+  document.getElementById('day-cards').innerHTML = picked.map((d, i) => `
+    <div class="day-card">
+      <div class="day-num-badge"><span style="font-size:9px;font-weight:700">${dayLabels[i][0]}</span><strong>${dayLabels[i][1]}</strong></div>
+      <div class="day-content">
+        <div class="day-action">${d.action}</div>
+        <div class="day-hint">${d.hint}</div>
+      </div>
+    </div>`).join('');
+
+  // フェーズ別参考リンク
+  const links = refLinks[phase.category] || refLinks.early;
+  document.getElementById('ref-links').innerHTML = links.map(l => `
+    <div class="ref-card">
+      <div class="ref-card-name">${l.name}</div>
+      <div class="ref-card-service">${l.service}</div>
+      <div class="ref-card-desc">${l.desc}</div>
+      <a class="ref-btn" href="${l.url}" target="_blank" rel="noopener noreferrer">${l.btn}（外部サイト）</a>
+    </div>`).join('');
+
+  showScreen('screen-result');
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function restart() {
+  scores = []; currentQ = 0;
+  showScreen('screen-top');
+}
+</script>
+</body>
+</html>
