@@ -16,18 +16,18 @@ const phases = [
 // ─── フェーズ別参考リンク ───
 const refLinks: Record<string, { name:string; service:string; desc:string; btn:string; url:string }[]> = {
   early: [
-    { name:"キャリア入門講座", service:"Udemy", desc:"スキルや働き方について学びたい人向けの入門講座が充実。自分のペースで学べる。", btn:"講座を見る", url:"https://www.udemy.com/" },
+    { name:"キャリア入門講座", service:"Udemy", desc:"スキルや働き方について学びたい人向けの入門講座が充実。自分のペースで学べる。", btn:"講座を見る", url:"https://trk.udemy.com/OYr7oA" },
     { name:"キャリア・働き方コラムを読む", service:"doda", desc:"転職を考えていなくても参考になるキャリアコラムが豊富。情報として気軽に読んでみて。", btn:"見てみる", url:"https://doda.jp/guide/" },
     { name:"働き方に関する記事を探す", service:"note", desc:"さまざまな人のキャリア体験談や働き方の考え方を読むだけでもヒントになる。", btn:"記事を見る", url:"https://note.com/" }
   ],
   mid: [
-    { name:"副業・複業向けスキル講座", service:"Udemy", desc:"副業やスキルアップに役立つ講座が多数。今のスキルを試すきっかけに。", btn:"講座を見る", url:"https://www.udemy.com/" },
+    { name:"副業・複業向けスキル講座", service:"Udemy", desc:"副業やスキルアップに役立つ講座が多数。今のスキルを試すきっかけに。", btn:"講座を見る", url:"https://trk.udemy.com/OYr7oA" },
     { name:"フリーランス向けマッチングを知る", service:"Lancers", desc:"今のスキルを副業で試すなら参考になるサービス。眺めるだけでもOK。", btn:"見てみる", url:"https://www.lancers.jp/" },
     { name:"キャリア相談ができるサービス", service:"ミートキャリア", desc:"転職を急かさずにキャリアの悩みを一緒に整理してくれる。まず話すだけでもOK。", btn:"詳細を見る", url:"https://www.meetcareer.net/" }
   ],
   late: [
     { name:"転職サイトを見てみる", service:"doda", desc:"今すぐ転職しなくてもOK。求人の傾向を知るだけで、準備の精度が上がる。", btn:"見てみる", url:"https://doda.jp/" },
-    { name:"転職に直結するスキル講座", service:"Udemy", desc:"転職活動に役立つスキルを短期集中で学べる。面接前の準備にも活用できる。", btn:"講座を見る", url:"https://www.udemy.com/" },
+    { name:"転職に直結するスキル講座", service:"Udemy", desc:"転職活動に役立つスキルを短期集中で学べる。面接前の準備にも活用できる。", btn:"講座を見る", url:"https://trk.udemy.com/OYr7oA" },
     { name:"転職エージェントに話を聞く", service:"マイナビエージェント", desc:"完全無料で使える転職エージェント。まず話を聞くだけでも、選択肢が広がる。", btn:"詳細を見る", url:"https://mynavi-agent.jp/" }
   ]
 };
