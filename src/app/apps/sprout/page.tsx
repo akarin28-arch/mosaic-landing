@@ -76,6 +76,23 @@ export default function SproutPage() {
     setError('');
   }
 
+  async function handleShare() {
+    if (!result) return;
+    const text = `【SPROUT診断】\n私のキャリアフェーズは「${result.phaseEmoji} ${result.phaseName}」でした！\n\nあなたも診断してみては？`;
+    const url = 'https://www.mosaic-design.jp/apps/sprout';
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({ title: 'SPROUT キャリア診断', text, url });
+        return;
+      } catch {
+        // キャンセルや非対応の場合はXへフォールバック
+      }
+    }
+    // フォールバック：X（Twitter）でシェア
+    const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text + '\n')}&url=${encodeURIComponent(url)}`;
+    window.open(xUrl, '_blank', 'noopener,noreferrer');
+  }
+
   const q = QUESTIONS[currentQ];
   const progress = ((currentQ + 1) / QUESTIONS.length) * 100;
 
@@ -196,7 +213,7 @@ export default function SproutPage() {
                 </div>
                 {/* シェア・リトライ */}
                 <div className="result-actions">
-                  <button className="btn-share">📤 結果をシェアする</button>
+                  <button className="btn-share" onClick={handleShare}>📤 結果をシェアする</button>
                   <button className="btn-retry" onClick={handleRetry}>もう一度</button>
                 </div>
                 <div className="share-note">「これ当たってた」ってなったらぜひシェアを 🌱</div>
