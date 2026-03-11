@@ -50,7 +50,7 @@ export default function Home() {
           align-items: center;
         }
         .logo img {
-          height: 32px;
+          height: 48px;
           width: auto;
         }
 
@@ -60,7 +60,7 @@ export default function Home() {
           flex-direction: column;
           justify-content: center;
           align-items: center;
-          padding: 8rem 5% 4rem;
+          padding: calc(8rem - 10px) 5% 4rem;
           position: relative;
         }
 
@@ -104,7 +104,7 @@ export default function Home() {
         }
 
         .hero h1 {
-          font-size: clamp(2rem, 5vw, 3.5rem);
+          font-size: clamp(1.875rem, 5vw, 3.375rem);
           font-weight: 700;
           margin-bottom: 1.5rem;
           line-height: 1.3;
@@ -114,7 +114,7 @@ export default function Home() {
         .hero p {
           font-size: clamp(1rem, 2vw, 1.1rem);
           color: var(--text-muted);
-          max-width: 700px;
+          max-width: 750px;
           margin: 0 auto;
           line-height: 1.8;
         }
@@ -131,7 +131,7 @@ export default function Home() {
           background: var(--card-bg);
           border: 1px solid var(--card-border);
           border-radius: 16px;
-          padding: 2.5rem 2rem;
+          padding: calc(2.5rem - 5px) 2rem;
           backdrop-filter: blur(10px);
           -webkit-backdrop-filter: blur(10px);
           transition: transform 0.3s ease, border-color 0.3s ease;
@@ -145,7 +145,7 @@ export default function Home() {
         .feature-icon {
           font-size: 2rem;
           color: var(--accent-color);
-          margin-bottom: 1.5rem;
+          margin-bottom: calc(1.5rem - 5px);
         }
 
         .feature-title {
