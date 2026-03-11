@@ -151,6 +151,7 @@ export default function Home() {
         .feature-title {
           font-size: 1.25rem;
           font-weight: 700;
+          margin-top: 0;
           margin-bottom: 1rem;
           color: var(--text-main);
         }
