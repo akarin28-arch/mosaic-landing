@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Link from "next/link";
 
 export default function Home() {
   const elementsRef = useRef<(HTMLElement | null)[]>([]);
@@ -100,7 +101,7 @@ export default function Home() {
         }
 
         .hero {
-          margin-bottom: 5rem;
+          margin-bottom: 3rem;
         }
 
         .hero h1 {
@@ -123,7 +124,7 @@ export default function Home() {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
           gap: 2rem;
-          margin-bottom: 5rem;
+          margin-bottom: 3rem;
           text-align: left;
         }
 
@@ -163,6 +164,24 @@ export default function Home() {
 
         .cta-section {
           margin-bottom: 2rem;
+        }
+
+        .cta-button {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+          color: white;
+          padding: 1rem 2.5rem;
+          border-radius: 50px;
+          font-size: 1.1rem;
+          font-weight: 700;
+          text-decoration: none;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+          border: none;
+          cursor: pointer;
+          margin-top: 1rem;
         }
 
         .coming-soon-badge {
@@ -223,14 +242,19 @@ export default function Home() {
       <main>
         <div className="content-wrapper">
           <section className="hero">
-            <h1 className="fade-in" ref={setRef}>自分だけの収入設計を、<br />見つけよう。</h1>
+            <h1 className="fade-in" ref={setRef}>自分だけの収入設計を<br />見つけよう。</h1>
             <p className="fade-in delay-1" ref={setRef}>8つの質問に答えるだけで、あなたの「収入スタイル×生き方スタイル」を診断。今すぐ始められるアクションと具体的な収入目安を提示する、収入ポートフォリオ設計サービス。</p>
+            <div className="fade-in delay-2" ref={setRef}>
+              <Link href="/apps/mosaic?reset=true" className="cta-button">
+                無料で診断する（1分）
+              </Link>
+            </div>
           </section>
 
           <section className="features">
             <div className="feature-card fade-in delay-2" ref={setRef}>
               <i className="fa-solid fa-stopwatch feature-icon"></i>
-              <h3 className="feature-title">3分で診断完了</h3>
+              <h3 className="feature-title">1分で診断完了</h3>
               <p className="feature-desc">直感的な8つの質問に答えるだけで、あなたに最適な収入ポートフォリオがすぐに分かります。</p>
             </div>
             <div className="feature-card fade-in delay-3" ref={setRef}>
@@ -246,9 +270,9 @@ export default function Home() {
           </section>
 
           <section className="cta-section fade-in delay-5" ref={setRef}>
-            <div className="coming-soon-badge">
-              2026年4月下旬 リリース予定
-            </div>
+            <Link href="/apps/mosaic?reset=true" className="cta-button">
+              無料で診断する（1分）
+            </Link>
           </section>
         </div>
       </main>
