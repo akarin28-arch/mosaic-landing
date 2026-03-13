@@ -3,6 +3,7 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { GUIDE_DATA } from "@/data/guideData";
+import { trackEvent } from "@/lib/analytics";
 
 const COLORS = {
     bg: "#060E1A",
@@ -30,13 +31,73 @@ const CATEGORY_COLOR = {
     ownership_income: COLORS.ownership,
 } as const;
 
+const CATEGORY_RESULT_TYPE_MAP = {
+    employment_contract: "skill",
+    asset_income: "invest",
+    content_income: "creative",
+    network_income: "network",
+    ownership_income: "asset",
+} as const;
+
+function getGuideResultType(category: string | undefined) {
+    if (!category) return "asset";
+    return CATEGORY_RESULT_TYPE_MAP[category as keyof typeof CATEGORY_RESULT_TYPE_MAP] || "asset";
+}
+
+function getGuideService(url: string) {
+    try {
+        const hostname = new URL(url).hostname.toLowerCase();
+        if (hostname.includes("udemy")) return "udemy";
+        if (hostname.includes("note")) return "note";
+        return "other";
+    } catch {
+        return "other";
+    }
+}
+
+function getSharePlatform(url: string) {
+    try {
+        const hostname = new URL(url, window.location.origin).hostname.toLowerCase();
+        if (hostname.includes("x.com") || hostname.includes("twitter.com")) return "x";
+        if (hostname.includes("line.me")) return "line";
+        if (hostname.includes("facebook.com")) return "facebook";
+        return "other";
+    } catch {
+        return "other";
+    }
+}
+
 export default function GuidePage({ id }: { id: string }) {
     const router = useRouter();
     const data = GUIDE_DATA[id as keyof typeof GUIDE_DATA];
 
     useEffect(() => {
         window.scrollTo(0, 0); // Scroll to top on page load
-    }, [id]);
+        if (data) {
+            trackEvent("mosaic_guide_view");
+        }
+    }, [data, id]);
+
+    useEffect(() => {
+        if (!data) return;
+
+        const listener = (event: MouseEvent) => {
+            const target = event.target as HTMLElement | null;
+            const anchor = target?.closest("a[href]") as HTMLAnchorElement | null;
+            if (!anchor) return;
+
+            const platform = getSharePlatform(anchor.href);
+            if (platform === "other" && !/share|intent|tweet/i.test(anchor.href)) return;
+
+            trackEvent("mosaic_share_click", {
+                platform,
+                result_type: getGuideResultType(data.category),
+            });
+        };
+
+        document.addEventListener("click", listener);
+        return () => document.removeEventListener("click", listener);
+    }, [data]);
 
     if (!data) {
         return (
@@ -190,6 +251,12 @@ export default function GuidePage({ id }: { id: string }) {
                             fontWeight: 700, fontSize: 16, borderRadius: 12, border: "none",
                             cursor: "pointer", textDecoration: "none",
                             boxShadow: `0 4px 14px ${ac}40`, transition: "transform 0.2s"
+                        }}
+                            onClick={() => {
+                                trackEvent("mosaic_external_click", {
+                                    location: "guide",
+                                    service: getGuideService(data.primaryCta.url),
+                                });
                         }}>
                             {data.primaryCta.text}
                         </a>
@@ -223,6 +290,12 @@ export default function GuidePage({ id }: { id: string }) {
                                 color: ac, borderRadius: 8, fontSize: 13, fontWeight: 700,
                                 textDecoration: "none", border: `1px solid ${ac}40`, transition: "background 0.2s"
                             }}
+                                onClick={() => {
+                                    trackEvent("mosaic_external_click", {
+                                        location: "guide",
+                                        service: getGuideService(svc.url),
+                                    });
+                                }}
                                 onMouseEnter={(e) => { e.currentTarget.style.background = ac + "25"; }}
                                 onMouseLeave={(e) => { e.currentTarget.style.background = ac + "15"; }}
                             >
@@ -257,6 +330,12 @@ export default function GuidePage({ id }: { id: string }) {
                         href={data.udemySection.url}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={() => {
+                            trackEvent("mosaic_external_click", {
+                                location: "guide",
+                                service: getGuideService(data.udemySection.url),
+                            });
+                        }}
                         style={{
                             display: "flex", alignItems: "center", justifyContent: "center",
                             width: "100%", padding: "12px", background: "#F59E0B18",

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { trackEvent } from '@/lib/analytics';
 
 // ─── 質問定義（UIのみ、スコア計算はAPIに隠蔽）───
 const QUESTIONS = [
@@ -23,6 +24,34 @@ type ResultData = {
 
 type Screen = 'top' | 'quiz' | 'loading' | 'result';
 
+const PHASE_KEY_BY_TOTAL = [
+  '0_neutral',
+  '3_mature',
+  '5_awareness',
+  '7_charge',
+  '9_runup',
+  '11_commit',
+  '13_prepare',
+  '15_ready',
+  '17_fullspeed',
+] as const;
+
+function getSproutPhaseKey(scores: number[]) {
+  const total = scores.reduce((sum, score) => sum + score, 0);
+  const index = Math.min(Math.floor(total / 2), PHASE_KEY_BY_TOTAL.length - 1);
+  return PHASE_KEY_BY_TOTAL[index];
+}
+
+function getSproutService(service: string) {
+  const normalized = service.toLowerCase();
+  if (normalized.includes('udemy')) return 'udemy';
+  if (normalized.includes('lancers')) return 'lancers';
+  if (normalized.includes('meetcareer') || normalized.includes('ミートキャリア')) return 'meetcareer';
+  if (normalized.includes('doda')) return 'doda';
+  if (normalized.includes('note')) return 'note';
+  return 'other';
+}
+
 export default function SproutPage() {
   const [screen, setScreen] = useState<Screen>('top');
   const [currentQ, setCurrentQ] = useState(0);
@@ -32,6 +61,7 @@ export default function SproutPage() {
   const [error, setError] = useState('');
 
   function handleStart() {
+    trackEvent('sprout_start');
     setScreen('quiz');
     setCurrentQ(0);
     setAnswers([]);
@@ -57,6 +87,7 @@ export default function SproutPage() {
           });
           if (!res.ok) throw new Error('診断処理に失敗しました');
           const data = await res.json();
+          trackEvent('sprout_result', { phase: getSproutPhaseKey(newAnswers) });
           setResult(data);
           setScreen('result');
         } catch (e: any) {
@@ -197,7 +228,19 @@ export default function SproutPage() {
                       <div className="ref-card-name">{l.name}</div>
                       <div className="ref-card-service">{l.service}</div>
                       <div className="ref-card-desc">{l.desc}</div>
-                      <a className="ref-btn" href={l.url} target="_blank" rel="noopener noreferrer">{l.btn}（外部サイト）</a>
+                      <a
+                        className="ref-btn"
+                        href={l.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() => {
+                          trackEvent('sprout_external_click', {
+                            service: getSproutService(l.service),
+                          });
+                        }}
+                      >
+                        {l.btn}（外部サイト）
+                      </a>
                     </div>
                   ))}
                   <div className="ref-disclosure">※一部リンクは紹介リンクを含みます</div>

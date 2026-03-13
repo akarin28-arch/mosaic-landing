@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { trackEvent } from "@/lib/analytics";
 
 // ─── UI用定数 ───
 const COLORS = {
-    bg: "#060E1A",
+    bg: "#0D1B2A",
     card: "#0D1B2A",
     cardBorder: "#1B2D45",
     text: "#E0E6ED",
@@ -216,6 +217,51 @@ const TARGET_QUESTION_LABEL = {
 
 const TILE_COLORS = ["#3B82F6", "#8B5CF6", "#10B981", "#F59E0B", "#EC4899"];
 
+const RESULT_TYPE_MAP = {
+    skill_labour: "skill",
+    asset_investing: "invest",
+    creative_content: "creative",
+    relationship_network: "network",
+    ownership_utilization: "asset",
+} as const;
+
+const SHARE_PLATFORM_MAP = {
+    "x.com": "x",
+    "twitter.com": "x",
+    "line.me": "line",
+    "facebook.com": "facebook",
+    "www.facebook.com": "facebook",
+    "m.facebook.com": "facebook",
+} as const;
+
+function getMosaicEntry() {
+    if (typeof document === "undefined") return "direct";
+
+    const referrer = document.referrer;
+    if (!referrer) return "direct";
+
+    try {
+        const refUrl = new URL(referrer);
+        return refUrl.origin === window.location.origin && refUrl.pathname === "/" ? "lp" : "direct";
+    } catch {
+        return "direct";
+    }
+}
+
+function getMosaicResultType(primaryIncomeStyle: string | undefined) {
+    if (!primaryIncomeStyle) return "asset";
+    return RESULT_TYPE_MAP[primaryIncomeStyle as keyof typeof RESULT_TYPE_MAP] || "asset";
+}
+
+function getSharePlatform(url: string) {
+    try {
+        const hostname = new URL(url, window.location.origin).hostname.toLowerCase();
+        return SHARE_PLATFORM_MAP[hostname as keyof typeof SHARE_PLATFORM_MAP] || "other";
+    } catch {
+        return "other";
+    }
+}
+
 function MosaicTileGrid() {
     const size = 4;
     const total = size * size;
@@ -243,6 +289,8 @@ function MosaicTileGrid() {
 
 export default function MOSAICDesignEngine() {
     const router = useRouter();
+    const hasTrackedStart = useRef(false);
+    const hasTrackedCompletion = useRef(false);
 
     // Use state without full localStorage initialization on the server to prevent hydration mismatch.
     const [isMounted, setIsMounted] = useState(false);
@@ -262,13 +310,22 @@ export default function MOSAICDesignEngine() {
 
     useEffect(() => {
         setIsMounted(true);
-        // Load from sessionStorage safely on client
-        setPhase(sessionStorage.getItem("mosaic_phase") || "input");
-        setCurrentQ(Number(sessionStorage.getItem("mosaic_currentQ")) || 0);
-        setAnswers(JSON.parse(sessionStorage.getItem("mosaic_answers") || "{}"));
-        setGoalMode(sessionStorage.getItem("mosaic_goalMode") || null);
-        setTarget(Number(sessionStorage.getItem("mosaic_target")) || null);
-        setResult(JSON.parse(sessionStorage.getItem("mosaic_result") || "null"));
+
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("reset") === "true") {
+            handleReset();
+            // Clear URL param to avoid reset on refresh
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, "", newUrl);
+        } else {
+            // Load from sessionStorage safely on client
+            setPhase(sessionStorage.getItem("mosaic_phase") || "input");
+            setCurrentQ(Number(sessionStorage.getItem("mosaic_currentQ")) || 0);
+            setAnswers(JSON.parse(sessionStorage.getItem("mosaic_answers") || "{}"));
+            setGoalMode(sessionStorage.getItem("mosaic_goalMode") || null);
+            setTarget(Number(sessionStorage.getItem("mosaic_target")) || null);
+            setResult(JSON.parse(sessionStorage.getItem("mosaic_result") || "null"));
+        }
 
         const mq = window.matchMedia("(hover: hover)");
         setCanHover(mq.matches);
@@ -300,6 +357,51 @@ export default function MOSAICDesignEngine() {
         if (target) sessionStorage.setItem("mosaic_target", target.toString());
         if (result) sessionStorage.setItem("mosaic_result", JSON.stringify(result));
     }, [phase, currentQ, answers, goalMode, target, result, isMounted]);
+
+    useEffect(() => {
+        if (!isMounted || hasTrackedStart.current) return;
+
+        const hasExistingState = Boolean(
+            sessionStorage.getItem("mosaic_answers") ||
+            sessionStorage.getItem("mosaic_result") ||
+            sessionStorage.getItem("mosaic_currentQ")
+        );
+
+        if (phase === "input" && currentQ === 0 && !hasExistingState) {
+            trackEvent("mosaic_start", { entry: getMosaicEntry() });
+            hasTrackedStart.current = true;
+        }
+    }, [currentQ, isMounted, phase]);
+
+    useEffect(() => {
+        if (phase !== "result" || !result || hasTrackedCompletion.current) return;
+
+        const resultType = getMosaicResultType(result.primaryIncomeStyle);
+        trackEvent("mosaic_complete");
+        trackEvent("mosaic_result", { result_type: resultType });
+        hasTrackedCompletion.current = true;
+    }, [phase, result]);
+
+    useEffect(() => {
+        if (phase !== "result") return;
+
+        const listener = (event: MouseEvent) => {
+            const target = event.target as HTMLElement | null;
+            const anchor = target?.closest("a[href]") as HTMLAnchorElement | null;
+            if (!anchor) return;
+
+            const platform = getSharePlatform(anchor.href);
+            if (platform === "other" && !/share|intent|tweet/i.test(anchor.href)) return;
+
+            trackEvent("mosaic_share_click", {
+                platform,
+                result_type: getMosaicResultType(result?.primaryIncomeStyle),
+            });
+        };
+
+        document.addEventListener("click", listener);
+        return () => document.removeEventListener("click", listener);
+    }, [phase, result]);
 
     function handleAnswer(qid: string, value: string) {
         // 状態を先に更新してボタンのハイライトを即座に反映
@@ -376,6 +478,8 @@ export default function MOSAICDesignEngine() {
         setExpandedLane(null);
         setResult(null);
         setErrorMsg("");
+        hasTrackedStart.current = false;
+        hasTrackedCompletion.current = false;
     }
 
     // Render nothing until mounted to avoid hydration error
@@ -390,7 +494,21 @@ export default function MOSAICDesignEngine() {
         if (answered.length === 0) return null;
         return (
             <div style={{ marginTop: 20, padding: "12px 14px", background: COLORS.card, border: `1px solid ${COLORS.cardBorder}`, borderRadius: 10 }}>
-                <div style={{ fontSize: 10, color: COLORS.textMuted, marginBottom: 8, letterSpacing: 1 }}>これまでの回答</div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                    <div style={{ fontSize: 10, color: COLORS.textMuted, letterSpacing: 1 }}>これまでの回答</div>
+                    <button
+                        onClick={handleReset}
+                        style={{
+                            background: "none", border: `1px solid ${COLORS.cardBorder}`, borderRadius: 4,
+                            padding: "2px 8px", fontSize: 10, color: COLORS.textMuted, cursor: "pointer",
+                            transition: "all 0.2s",
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.borderColor = ac; e.currentTarget.style.color = ac; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.borderColor = COLORS.cardBorder; e.currentTarget.style.color = COLORS.textMuted; }}
+                    >
+                        最初からやり直す
+                    </button>
+                </div>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                     {answered.map((q, i) => {
                         const opt = q.options.find((o) => o.value === answers[q.id]);
@@ -424,7 +542,21 @@ export default function MOSAICDesignEngine() {
         if (answered.length === 0) return null;
         return (
             <div style={{ marginTop: 20, padding: "12px 14px", background: COLORS.card, border: `1px solid ${COLORS.cardBorder}`, borderRadius: 10 }}>
-                <div style={{ fontSize: 10, color: COLORS.textMuted, marginBottom: 8, letterSpacing: 1 }}>これまでの回答</div>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                    <div style={{ fontSize: 10, color: COLORS.textMuted, letterSpacing: 1 }}>これまでの回答</div>
+                    <button
+                        onClick={handleReset}
+                        style={{
+                            background: "none", border: `1px solid ${COLORS.cardBorder}`, borderRadius: 4,
+                            padding: "2px 8px", fontSize: 10, color: COLORS.textMuted, cursor: "pointer",
+                            transition: "all 0.2s",
+                        }}
+                        onMouseEnter={(e) => { e.currentTarget.style.borderColor = ac; e.currentTarget.style.color = ac; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.borderColor = COLORS.cardBorder; e.currentTarget.style.color = COLORS.textMuted; }}
+                    >
+                        最初からやり直す
+                    </button>
+                </div>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                     {answered.map((q, i) => {
                         const opt = q.options.find((o) => o.value === answers[q.id]);
@@ -454,8 +586,9 @@ export default function MOSAICDesignEngine() {
         background: COLORS.bg,
         color: COLORS.text,
         fontFamily: "'Noto Sans JP', 'Helvetica Neue', sans-serif",
-        padding: "24px 16px",
+        padding: "24px 0", // Reduced horizontal padding for full width on mobile
         maxWidth: 600,
+        width: "100%",
         margin: "0 auto",
     };
 
@@ -465,6 +598,8 @@ export default function MOSAICDesignEngine() {
         borderRadius: 12,
         padding: "20px",
         marginBottom: 16,
+        marginRight: 16, // Add margin to avoid sticking to screen edge when width < 600
+        marginLeft: 16,
     };
 
     const btnBase: React.CSSProperties = {
@@ -901,6 +1036,12 @@ export default function MOSAICDesignEngine() {
                                     href="https://www.udemy.com/"
                                     target="_blank"
                                     rel="noopener noreferrer"
+                                    onClick={() => {
+                                        trackEvent("mosaic_external_click", {
+                                            location: "result",
+                                            service: "udemy",
+                                        });
+                                    }}
                                     style={{
                                         display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
                                         width: "100%", padding: "12px", background: "#F59E0B18",
