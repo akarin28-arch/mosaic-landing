@@ -16,8 +16,18 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "MOSAIC | 自分だけの収入設計を、見つけよう。",
-  description: "8つの質問に答えるだけで、あなたの「収入スタイル×生き方スタイル」を診断。今すぐ始められるアクションと具体的な収入目安を提示する、収入ポートフォリオ設計サービス。",
+  title: "MOSAIC | 収入ポートフォリオ診断",
+  description:
+    "8つの質問に答えるだけで、あなたに合った収入スタイルと具体的なアクションを提案するMOSAICの診断サービスです。",
+  icons: {
+    icon: [
+      { url: "/mosaic-icon-v2.svg", type: "image/svg+xml" },
+      { url: "/favicon-v2-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon-v2-192x192.png", sizes: "192x192", type: "image/png" },
+    ],
+    shortcut: [{ url: "/favicon-v2-32x32.png", sizes: "32x32", type: "image/png" }],
+    apple: [{ url: "/apple-touch-icon-v2.png", sizes: "180x180", type: "image/png" }],
+  },
   other: {
     "impact-site-verification": "3c2b4438-eb0b-45bd-86fb-4e46306197e0",
   },
@@ -31,8 +41,10 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
       </head>
       <body
         className={`${notoSansJP.variable} ${montserrat.variable} antialiased`}
