@@ -1136,6 +1136,10 @@ export default function MOSAICDesignEngine() {
                     MOSAIC v3.3 ─ 収入ポートフォリオ診断
                 </div>
 
+                <div style={{ textAlign: "center", marginTop: 10, fontSize: 10, color: COLORS.textMuted }}>
+                    ※一部リンクは紹介リンクを含みます
+                </div>
+
                 <div style={{ textAlign: "center", paddingBottom: 20, paddingTop: 10, fontSize: 12, color: COLORS.textMuted }}>
                     Operated by <a href="https://mosaic-design.jp" style={{ color: COLORS.textMuted, textDecoration: "underline" }}>Mosaic Design</a>
                 </div>
