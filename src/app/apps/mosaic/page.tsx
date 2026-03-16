@@ -1033,7 +1033,7 @@ export default function MOSAICDesignEngine() {
                                     {learningHint.text}
                                 </div>
                                 <a
-                                    href="https://www.udemy.com/"
+                                    href="https://trk.udemy.com/aNOx5N"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     onClick={() => {

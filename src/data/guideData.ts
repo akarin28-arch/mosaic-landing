@@ -23,10 +23,10 @@ export const GUIDE_DATA = {
             today: "最小サービス（例：30分相談に乗ります）を1つ下書きする",
             thisWeek: "1件目を正式に出品する",
         },
-        primaryCta: { text: "スキル販売を始める（ココナラ）", url: "https://coconala.com/" },
+        primaryCta: { text: "スキル販売を始める（ココナラ）", url: "https://px.a8.net/svt/ejp?a8mat=4AZGCD+DML78Y+2PEO+6C1VM" },
         ctaSubText: "※登録無料 / 出品だけなら費用なし",
         services: [
-            { name: "ココナラ", desc: "自分のスキルを少額から出品できる定番プラットフォーム", fit: "自分の得意なことをワンコインから出品したい人", url: "https://coconala.com/" },
+            { name: "ココナラ", desc: "自分のスキルを少額から出品できる定番プラットフォーム", fit: "自分の得意なことをワンコインから出品したい人", url: "https://px.a8.net/svt/ejp?a8mat=4AZGCD+DML78Y+2PEO+6C1VM" },
             { name: "クラウドワークス", desc: "案件形式で仕事を受注しやすい", fit: "データ入力やライティングなど、明確な案件を探したい人", url: "https://crowdworks.jp/" },
             { name: "ランサーズ", desc: "プロフェッショナル向けの案件も豊富", fit: "少し高単価なプロ向け案件や継続案件を狙いたい人", url: "https://www.lancers.jp/" },
             { name: "Canva", desc: "出品用サムネイルやポートフォリオ作成に必須のツール", fit: "出品用の目を引く画像やポートフォリオをサクッと作りたい人", url: "https://www.canva.com/" },
@@ -38,7 +38,7 @@ export const GUIDE_DATA = {
         ],
         udemySection: {
             lead: "出品するスキルを整理したい方へ\nUdemyで実務スキルの入門講座を1つ学ぶと、出品できるサービスのイメージが明確になります。",
-            url: "https://www.udemy.com/",
+            url: "https://trk.udemy.com/aNOx5N",
         },
     },
     "asset-income": {
@@ -79,7 +79,7 @@ export const GUIDE_DATA = {
         ],
         udemySection: {
             lead: "投資の基礎を理解しておきたい方へ\nUdemyの入門講座で「NISA」や「インデックス投資」を学んでおくと、資産運用の全体像がつかみやすくなります。",
-            url: "https://www.udemy.com/",
+            url: "https://trk.udemy.com/aNOx5N",
         },
     },
     "content-income": {
@@ -121,7 +121,7 @@ export const GUIDE_DATA = {
         ],
         udemySection: {
             lead: "発信スキルを高めたい方へ\nUdemyでライティングや動画編集の基礎を学ぶと、コンテンツの質を高めることができます。",
-            url: "https://www.udemy.com/",
+            url: "https://trk.udemy.com/aNOx5N",
         },
     },
     "network-income": {
@@ -153,7 +153,7 @@ export const GUIDE_DATA = {
         services: [
             { name: "note", desc: "丁寧なレビュー記事を書いて紹介リンクを貼る基盤", fit: "長文でじっくり商品の魅力を語り、読者を納得させたい人", url: "https://note.com/" },
             { name: "X (Twitter)", desc: "リアルタイムな使用感や紹介を拡散するツール", fit: "リアルタイムな感想や、サクッと読める短文で紹介したい人", url: "https://x.com/" },
-            { name: "A8.net", desc: "国内最大級のアフィリエイトサービス。案件探しに", fit: "どんな商品がアフィリエイトできるのか、まずは案件一覧を見たい人", url: "https://www.a8.net/" },
+            { name: "A8.net", desc: "国内最大級のアフィリエイトサービス。案件探しに", fit: "どんな商品がアフィリエイトできるのか、まずは案件一覧を見たい人", url: "https://px.a8.net/svt/ejp?a8mat=4AZAW4+11IBW2+0K+10GL36", linkLabel: "A8.net", trackingPixelUrl: "https://www19.a8.net/0.gif?a8mat=4AZAW4+11IBW2+0K+10GL36" },
         ],
         pitfalls: [
             "広告単価だけを見て、自分が使ったこともない粗悪なものを勧める",
@@ -162,7 +162,7 @@ export const GUIDE_DATA = {
         ],
         udemySection: {
             lead: "紹介ビジネスの基本を理解したい方へ\nUdemyのマーケティング講座で基礎を学ぶと、信頼される紹介コンテンツを作りやすくなります。",
-            url: "https://www.udemy.com/",
+            url: "https://trk.udemy.com/aNOx5N",
         },
     },
     "ownership-income": {
@@ -189,12 +189,12 @@ export const GUIDE_DATA = {
             today: "一番やりやすいものを1つ選び、掲載できそうなプラットフォームを探す",
             thisWeek: "写真や説明文を準備し、無料登録・掲載まで完了させる",
         },
-        primaryCta: { text: "空きスペースで収入を作る", url: "https://www.spacemarket.com/lp/space-entry" },
+        primaryCta: { text: "空きスペースで収入を作る", url: "https://px.a8.net/svt/ejp?a8mat=4AZGCD+FNTINM+5SHA+5YRHE", linkLabel: "【スペースマーケット】", trackingPixelUrl: "https://www13.a8.net/0.gif?a8mat=4AZGCD+FNTINM+5SHA+5YRHE" },
         ctaSubText: "※登録無料 / 空きスペースを収益化",
         services: [
-            { name: "スペースマーケット", desc: "空き部屋やスペースを時間貸しできる", fit: "使っていない部屋や実家の空きスペースを時間貸ししたい人", url: "https://www.spacemarket.com/lp/space-entry" },
+            { name: "スペースマーケット", desc: "空き部屋やスペースを時間貸しできる", fit: "使っていない部屋や実家の空きスペースを時間貸ししたい人", url: "https://px.a8.net/svt/ejp?a8mat=4AZGCD+FNTINM+5SHA+5YRHE", linkLabel: "【スペースマーケット】", trackingPixelUrl: "https://www13.a8.net/0.gif?a8mat=4AZGCD+FNTINM+5SHA+5YRHE" },
             { name: "Airbnb", desc: "民泊として国内外の旅行者に空間を提供する", fit: "本格的に民泊ホストとして、旅行者に宿泊体験を提供したい人", url: "https://www.airbnb.jp/" },
-            { name: "メルカリ", desc: "国内最大のフリマアプリ。不用品販売の定番", fit: "まずは家にある不要なモノを手軽に現金化してみたい人", url: "https://jp.mercari.com/" },
+            { name: "メルカリ", desc: "国内最大のフリマアプリ。不用品販売の定番", fit: "まずは家にある不要なモノを手軽に現金化してみたい人", url: "https://px.a8.net/svt/ejp?a8mat=4AZGCE+6JSFM+5LNQ+5YJRM", linkLabel: "メルカリ", trackingPixelUrl: "https://www16.a8.net/0.gif?a8mat=4AZGCE+6JSFM+5LNQ+5YJRM" },
             { name: "ジモティー", desc: "地域密着型の掲示板。大きなモノの手渡し取引に便利", fit: "家具や家電など、送料がかかる大きなモノを近所の人に譲りたい人", url: "https://jmty.jp/" },
             { name: "ラクマ", desc: "楽天グループのフリマアプリ。楽天ポイントが使える", fit: "楽天経済圏を利用しており、売上をポイントとして活用したい人", url: "https://fril.jp/" },
         ],
@@ -205,7 +205,7 @@ export const GUIDE_DATA = {
         ],
         udemySection: {
             lead: "資産活用の知識を身につけたい方へ\nUdemyで不動産やスペース運用の基礎を学ぶと、トラブルを避けながら運営しやすくなります。",
-            url: "https://www.udemy.com/",
+            url: "https://trk.udemy.com/aNOx5N",
         },
     },
 };

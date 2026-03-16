@@ -245,11 +245,12 @@ export default function GuidePage({ id }: { id: string }) {
 
                 {data.primaryCta && (
                     <div style={{ marginBottom: 24 }}>
-                        <a href={data.primaryCta.url} style={{
+                        <a href={data.primaryCta.url} target="_blank" rel="noopener noreferrer" style={{
                             display: "flex", alignItems: "center", justifyContent: "center",
                             width: "100%", padding: "16px", background: ac, color: "#000",
                             fontWeight: 700, fontSize: 16, borderRadius: 12, border: "none",
-                            cursor: "pointer", textDecoration: "none",
+                            cursor: "pointer", textDecoration: "none", textAlign: "center",
+                            lineHeight: 1.4, whiteSpace: "normal", wordBreak: "break-word",
                             boxShadow: `0 4px 14px ${ac}40`, transition: "transform 0.2s"
                         }}
                             onClick={() => {
@@ -258,8 +259,17 @@ export default function GuidePage({ id }: { id: string }) {
                                     service: getGuideService(data.primaryCta.url),
                                 });
                         }}>
-                            {data.primaryCta.text}
+                            {"linkLabel" in data.primaryCta ? data.primaryCta.linkLabel : data.primaryCta.text}
                         </a>
+                        {"trackingPixelUrl" in data.primaryCta && data.primaryCta.trackingPixelUrl && (
+                            <img
+                                src={data.primaryCta.trackingPixelUrl}
+                                alt=""
+                                width={1}
+                                height={1}
+                                style={{ border: 0, position: "fixed", left: -9999, opacity: 0, pointerEvents: "none" }}
+                            />
+                        )}
                         {data.ctaSubText && (
                             <div style={{ fontSize: 12, color: COLORS.textMuted, textAlign: "center", marginTop: 10, lineHeight: 1.4 }}>
                                 {data.ctaSubText}
@@ -288,7 +298,8 @@ export default function GuidePage({ id }: { id: string }) {
                             <a href={svc.url} target="_blank" rel="noopener noreferrer" style={{
                                 alignSelf: "flex-end", padding: "10px 18px", background: ac + "15",
                                 color: ac, borderRadius: 8, fontSize: 13, fontWeight: 700,
-                                textDecoration: "none", border: `1px solid ${ac}40`, transition: "background 0.2s"
+                                textDecoration: "none", border: `1px solid ${ac}40`, transition: "background 0.2s",
+                                maxWidth: "100%", textAlign: "center", lineHeight: 1.4, whiteSpace: "normal", wordBreak: "break-word"
                             }}
                                 onClick={() => {
                                     trackEvent("mosaic_external_click", {
@@ -299,8 +310,18 @@ export default function GuidePage({ id }: { id: string }) {
                                 onMouseEnter={(e) => { e.currentTarget.style.background = ac + "25"; }}
                                 onMouseLeave={(e) => { e.currentTarget.style.background = ac + "15"; }}
                             >
-                                見てみる <span style={{ fontSize: 11, marginLeft: 2 }}>↗</span>
+                                {"linkLabel" in svc && svc.linkLabel ? svc.linkLabel : "見てみる"}
+                                {!("linkLabel" in svc && svc.linkLabel) && <span style={{ fontSize: 11, marginLeft: 2 }}>↗</span>}
                             </a>
+                            {"trackingPixelUrl" in svc && svc.trackingPixelUrl && (
+                                <img
+                                    src={svc.trackingPixelUrl}
+                                    alt=""
+                                    width={1}
+                                    height={1}
+                                    style={{ border: 0, position: "fixed", left: -9999, opacity: 0, pointerEvents: "none" }}
+                                />
+                            )}
                         </div>
                     ))}
                 </div>
