@@ -44,10 +44,17 @@ export default function OpenGraphImage() {
             <div style={{ fontSize: 74, fontWeight: 700, lineHeight: 1.15 }}>
               無料収入ポートフォリオ診断
             </div>
-            <div style={{ fontSize: 32, lineHeight: 1.5, color: "#cbd5e1" }}>
-              8つの質問で、副業・資産・キャリアから
-              <br />
-              自分に合う収入スタイルと次のアクションを提案
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                fontSize: 32,
+                lineHeight: 1.5,
+                color: "#cbd5e1",
+              }}
+            >
+              <span>8つの質問で、副業・資産・キャリアから</span>
+              <span>自分に合う収入スタイルと次のアクションを提案</span>
             </div>
           </div>
           <div style={{ display: "flex", gap: 16 }}>
