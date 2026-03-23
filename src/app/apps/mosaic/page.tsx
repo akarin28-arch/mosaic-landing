@@ -661,7 +661,7 @@ export default function MOSAICDesignEngine() {
                 <div style={{ textAlign: "center", marginBottom: 28 }}>
                     <div style={{ fontSize: 11, letterSpacing: 3, color: COLORS.textMuted, marginBottom: 4 }}>MOSAIC</div>
                     <div style={{ fontSize: 12, color: COLORS.textMuted, marginBottom: 4, opacity: 0.8 }}>副業・資産・キャリアから、自分に合う収入設計を見つけよう。</div>
-                    <h1 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>無料収入ポートフォリオ診断</h1>
+                    <h1 style={{ fontSize: 18, fontWeight: 700, margin: 0 }}>収入ポートフォリオ診断</h1>
                     <div style={{ fontSize: 12, color: COLORS.textMuted, marginTop: 8, lineHeight: 1.7 }}>
                         8つの質問に答えるだけで、あなたに合う収入スタイルと次のアクションを提案します。
                     </div>
@@ -745,7 +745,7 @@ export default function MOSAICDesignEngine() {
                 <div style={{ textAlign: "center", marginBottom: 28 }}>
                     <div style={{ fontSize: 11, letterSpacing: 3, color: COLORS.textMuted, marginBottom: 4 }}>MOSAIC</div>
                     <div style={{ fontSize: 12, color: COLORS.textMuted, marginBottom: 4, opacity: 0.8 }}>副業・資産・キャリアから、自分に合う収入設計を見つけよう。</div>
-                    <div style={{ fontSize: 18, fontWeight: 700 }}>無料収入ポートフォリオ診断</div>
+                    <div style={{ fontSize: 18, fontWeight: 700 }}>収入ポートフォリオ診断</div>
                 </div>
                 <div style={cardStyle}>
                     <div style={{ fontSize: 12, color: COLORS.textMuted, marginBottom: 6 }}>最後の質問</div>

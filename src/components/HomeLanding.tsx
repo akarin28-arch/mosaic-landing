@@ -268,7 +268,7 @@ export default function HomeLanding() {
         <div className="content-wrapper">
           <section className="hero">
             <h1 className="fade-in" ref={setRef}>
-              無料収入ポートフォリオ診断
+              収入ポートフォリオ診断
             </h1>
             <p className="fade-in delay-1" ref={setRef}>
               8つの質問に答えるだけで、あなたに合った「収入スタイル×生き方スタイル」を診断。副業・資産・キャリアのバランスをもとに、今すぐ始められる次のアクションを提案します。
