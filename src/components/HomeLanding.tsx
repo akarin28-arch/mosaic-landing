@@ -122,9 +122,10 @@ export default function HomeLanding() {
           margin: 0 0 1.5rem;
           line-height: 1.3;
           letter-spacing: 0.02em;
+          color: var(--text-main);
         }
 
-        .hero p {
+        .hero p:not(.hero-lead) {
           font-size: clamp(1rem, 2vw, 1.1rem);
           color: var(--text-muted);
           max-width: 750px;
