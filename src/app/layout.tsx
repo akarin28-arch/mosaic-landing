@@ -16,9 +16,11 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "MOSAIC | 収入ポートフォリオ診断",
+  metadataBase: new URL("https://mosaic-design.jp"),
+  title: "MOSAIC",
   description:
-    "8つの質問に答えるだけで、あなたに合った収入スタイルと具体的なアクションを提案するMOSAICの診断サービスです。",
+    "MOSAICは、収入ポートフォリオ診断を通じて自分に合う収入スタイルと次のアクションを知るためのサービスです。",
+  applicationName: "MOSAIC",
   icons: {
     icon: [
       { url: "/mosaic-icon-v2.svg", type: "image/svg+xml" },
