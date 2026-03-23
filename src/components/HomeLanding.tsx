@@ -108,9 +108,18 @@ export default function HomeLanding() {
         }
 
         .hero h1 {
+          font-size: clamp(0.875rem, 1.8vw, 1rem);
+          font-weight: 700;
+          margin-bottom: 0.9rem;
+          line-height: 1.4;
+          letter-spacing: 0.08em;
+          color: var(--text-muted);
+        }
+
+        .hero-lead {
           font-size: clamp(1.875rem, 5vw, 3.375rem);
           font-weight: 700;
-          margin-bottom: 1.5rem;
+          margin: 0 0 1.5rem;
           line-height: 1.3;
           letter-spacing: 0.02em;
         }
@@ -241,6 +250,9 @@ export default function HomeLanding() {
 
         @media (max-width: 768px) {
           .hero h1 {
+            margin-bottom: 0.75rem;
+          }
+          .hero-lead {
             margin-bottom: 1rem;
           }
           .features {
@@ -270,10 +282,15 @@ export default function HomeLanding() {
             <h1 className="fade-in" ref={setRef}>
               収入ポートフォリオ診断
             </h1>
-            <p className="fade-in delay-1" ref={setRef}>
+            <p className="hero-lead fade-in delay-1" ref={setRef}>
+              自分だけの収入設計を
+              <br />
+              見つけよう。
+            </p>
+            <p className="fade-in delay-2" ref={setRef}>
               8つの質問に答えるだけで、あなたに合った「収入スタイル×生き方スタイル」を診断。副業・資産・キャリアのバランスをもとに、今すぐ始められる次のアクションを提案します。
             </p>
-            <div className="fade-in delay-2" ref={setRef}>
+            <div className="fade-in delay-3" ref={setRef}>
               <Link href="/apps/mosaic?reset=true" className="cta-button">
                 無料で診断する（1分）
               </Link>
