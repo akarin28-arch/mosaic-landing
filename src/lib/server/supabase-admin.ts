@@ -5,6 +5,10 @@
   return { url, serviceRoleKey };
 }
 
+export function isSupabaseAdminConfigured() {
+  return Boolean(getEnv());
+}
+
 async function rest(path: string, init: RequestInit = {}) {
   const env = getEnv();
   if (!env) return null;
