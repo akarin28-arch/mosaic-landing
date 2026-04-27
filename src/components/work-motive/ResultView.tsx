@@ -1,11 +1,183 @@
 'use client';
 
+import { CSSProperties } from 'react';
 import { AXIS_LABELS, WorkMotiveResult } from '@/lib/work-motive/types';
 
 type ResultViewProps = {
   result: WorkMotiveResult;
   shareUrl: string;
   onRetry: () => void;
+};
+
+const styles: Record<string, CSSProperties> = {
+  shell: {
+    minHeight: '100vh',
+    background: 'radial-gradient(circle at top, #ecfdf5 0%, #f8fafc 45%, #ffffff 100%)',
+  },
+  page: {
+    maxWidth: '960px',
+    margin: '0 auto',
+    padding: '24px 16px 20px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '16px',
+  },
+  panel: {
+    borderRadius: '24px',
+    border: '1px solid #e2e8f0',
+    backgroundColor: '#ffffff',
+    padding: '20px',
+    boxShadow: '0 12px 26px rgba(15, 23, 42, 0.06)',
+  },
+  heroPanel: {
+    border: '1px solid #d1fae5',
+    borderRadius: '28px',
+    backgroundColor: '#ffffff',
+    padding: '28px 20px',
+    textAlign: 'center',
+    boxShadow: '0 14px 32px rgba(15, 23, 42, 0.08)',
+  },
+  eyebrow: {
+    margin: 0,
+    fontSize: '11px',
+    fontWeight: 800,
+    textTransform: 'uppercase',
+    letterSpacing: '0.28em',
+    color: '#059669',
+  },
+  title: {
+    margin: '12px 0 0',
+    fontSize: 'clamp(30px, 6vw, 48px)',
+    lineHeight: 1.12,
+    fontWeight: 900,
+    letterSpacing: '-0.04em',
+    color: '#0f172a',
+  },
+  catchCopy: {
+    margin: '12px 0 0',
+    fontSize: '15px',
+    fontWeight: 700,
+    lineHeight: 1.8,
+    color: '#64748b',
+  },
+  chipWrap: {
+    marginTop: '18px',
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '8px',
+    justifyContent: 'center',
+  },
+  chip: {
+    borderRadius: '9999px',
+    backgroundColor: '#f1f5f9',
+    padding: '6px 12px',
+    fontSize: '12px',
+    fontWeight: 800,
+    color: '#475569',
+  },
+  label: {
+    margin: 0,
+    fontSize: '11px',
+    fontWeight: 800,
+    textTransform: 'uppercase',
+    letterSpacing: '0.18em',
+    color: '#94a3b8',
+  },
+  body: {
+    margin: '12px 0 0',
+    whiteSpace: 'pre-line',
+    fontSize: '14px',
+    lineHeight: 1.9,
+    color: '#334155',
+  },
+  axisRow: {
+    display: 'grid',
+    gridTemplateColumns: '88px 1fr 32px',
+    alignItems: 'center',
+    gap: '12px',
+  },
+  axisLabel: {
+    textAlign: 'right',
+    fontSize: '12px',
+    fontWeight: 800,
+    color: '#64748b',
+  },
+  axisBarTrack: {
+    height: '12px',
+    overflow: 'hidden',
+    borderRadius: '9999px',
+    backgroundColor: '#e2e8f0',
+  },
+  axisValue: {
+    textAlign: 'right',
+    fontSize: '14px',
+    fontWeight: 800,
+    color: '#334155',
+  },
+  grid: {
+    display: 'grid',
+    gap: '16px',
+  },
+  accentGreen: {
+    border: '1px solid #a7f3d0',
+    backgroundColor: '#ecfdf5',
+  },
+  accentAmber: {
+    border: '1px solid #fde68a',
+    backgroundColor: '#fffbeb',
+  },
+  accentRose: {
+    border: '1px solid #fecdd3',
+    backgroundColor: '#fff1f2',
+  },
+  ul: {
+    margin: '12px 0 0',
+    paddingLeft: '20px',
+    fontSize: '14px',
+    lineHeight: 1.9,
+    color: '#334155',
+  },
+  actions: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '12px',
+    marginTop: '8px',
+  },
+  primaryButton: {
+    border: 0,
+    borderRadius: '9999px',
+    backgroundColor: '#0f172a',
+    color: '#ffffff',
+    padding: '14px 20px',
+    fontSize: '14px',
+    fontWeight: 800,
+    cursor: 'pointer',
+    boxShadow: '0 10px 24px rgba(15, 23, 42, 0.16)',
+  },
+  secondaryButton: {
+    borderRadius: '9999px',
+    border: '1px solid #cbd5e1',
+    backgroundColor: '#ffffff',
+    color: '#334155',
+    padding: '14px 20px',
+    fontSize: '14px',
+    fontWeight: 800,
+    cursor: 'pointer',
+    boxShadow: '0 8px 20px rgba(15, 23, 42, 0.06)',
+  },
+  footer: {
+    paddingTop: '30px',
+    paddingBottom: '16px',
+    textAlign: 'center',
+    fontSize: '11px',
+    fontWeight: 400,
+    color: '#94a3b8',
+  },
+  footerLink: {
+    color: '#64748b',
+    textDecoration: 'underline',
+    textUnderlineOffset: '2px',
+  },
 };
 
 export function ResultView({ result, shareUrl, onRetry }: ResultViewProps) {
@@ -33,108 +205,104 @@ export function ResultView({ result, shareUrl, onRetry }: ResultViewProps) {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-4 py-6 sm:px-6">
-      <section className="rounded-[28px] border border-emerald-100 bg-white px-5 py-7 text-center shadow-sm">
-        <p className="text-[11px] font-bold uppercase tracking-[0.28em] text-emerald-600">YOUR TYPE</p>
-        <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-900">{result.title}</h2>
-        <p className="mt-3 text-sm font-semibold leading-7 text-slate-500">{result.catchCopy}</p>
-        <div className="mt-5 flex flex-wrap justify-center gap-2">
-          {result.chips.map((chip) => (
-            <span key={chip} className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">
-              {chip}
-            </span>
-          ))}
-        </div>
-      </section>
+    <div style={styles.shell}>
+      <div style={styles.page}>
+        <section style={styles.heroPanel}>
+          <p style={styles.eyebrow}>YOUR TYPE</p>
+          <h2 style={styles.title}>{result.title}</h2>
+          <p style={styles.catchCopy}>{result.catchCopy}</p>
+          <div style={styles.chipWrap}>
+            {result.chips.map((chip) => (
+              <span key={chip} style={styles.chip}>
+                {chip}
+              </span>
+            ))}
+          </div>
+        </section>
 
-      <section className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">総評</p>
-        <p className="mt-3 whitespace-pre-line text-sm leading-7 text-slate-700">{result.summaryText}</p>
-      </section>
+        <section style={styles.panel}>
+          <p style={styles.label}>SUMMARY</p>
+          <p style={styles.body}>{result.summaryText}</p>
+        </section>
 
-      <section className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">スコア</p>
-        <div className="mt-4 space-y-3">
-          {axes.map((axis) => {
-            const percent = Math.round((result.scores[axis] / maxScore) * 100);
-            return (
-              <div key={axis} className="grid grid-cols-[88px_1fr_32px] items-center gap-3">
-                <span className="text-right text-xs font-bold text-slate-500">{AXIS_LABELS[axis]}</span>
-                <div className="h-3 overflow-hidden rounded-full bg-slate-100">
-                  <div className="h-full rounded-full bg-emerald-500 transition-all" style={{ width: `${percent}%` }} />
+        <section style={styles.panel}>
+          <p style={styles.label}>SCORES</p>
+          <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {axes.map((axis) => {
+              const percent = Math.round((result.scores[axis] / maxScore) * 100);
+              return (
+                <div key={axis} style={styles.axisRow}>
+                  <span style={styles.axisLabel}>{AXIS_LABELS[axis]}</span>
+                  <div style={styles.axisBarTrack}>
+                    <div
+                      style={{
+                        height: '100%',
+                        width: `${percent}%`,
+                        borderRadius: '9999px',
+                        backgroundColor: '#10b981',
+                      }}
+                    />
+                  </div>
+                  <span style={styles.axisValue}>{result.scores[axis]}</span>
                 </div>
-                <span className="text-right text-sm font-bold text-slate-700">{result.scores[axis]}</span>
-              </div>
-            );
-          })}
-        </div>
-      </section>
+              );
+            })}
+          </div>
+        </section>
 
-      <section className="grid gap-4 lg:grid-cols-2">
-        <article className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">このタイプの人は</p>
-          <p className="mt-3 whitespace-pre-line text-sm leading-7 text-slate-700">{result.personalityText}</p>
-        </article>
-        <article className="rounded-[24px] border border-emerald-200 bg-emerald-50 p-5 shadow-sm">
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">今回の回答から見える特徴</p>
-          <p className="mt-3 whitespace-pre-line text-sm leading-7 text-emerald-950">{result.featureText}</p>
-        </article>
-      </section>
+        <section style={{ ...styles.grid, gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
+          <article style={styles.panel}>
+            <p style={styles.label}>PERSONALITY</p>
+            <p style={styles.body}>{result.personalityText}</p>
+          </article>
+          <article style={{ ...styles.panel, ...styles.accentGreen }}>
+            <p style={{ ...styles.label, color: '#047857' }}>FEATURE</p>
+            <p style={{ ...styles.body, color: '#064e3b' }}>{result.featureText}</p>
+          </article>
+        </section>
 
-      <section className="rounded-[24px] border border-amber-200 bg-amber-50 p-5 shadow-sm">
-        <p className="text-xs font-bold uppercase tracking-[0.18em] text-amber-700">矛盾とズレ</p>
-        <p className="mt-3 whitespace-pre-line text-sm leading-7 text-amber-950">{result.conflictText}</p>
-      </section>
+        <section style={{ ...styles.panel, ...styles.accentAmber }}>
+          <p style={{ ...styles.label, color: '#b45309' }}>CONFLICT</p>
+          <p style={{ ...styles.body, color: '#78350f' }}>{result.conflictText}</p>
+        </section>
 
-      <section className="grid gap-4 lg:grid-cols-2">
-        <article className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">向いている働き方</p>
-          <ul className="mt-3 space-y-3 pl-5 text-sm leading-7 text-slate-700">
-            {result.fit.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </article>
-        <article className="rounded-[24px] border border-rose-200 bg-rose-50 p-5 shadow-sm">
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-rose-700">ハマりやすい罠</p>
-          <ul className="mt-3 space-y-3 pl-5 text-sm leading-7 text-rose-950">
-            {result.trap.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </article>
-      </section>
+        <section style={{ ...styles.grid, gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
+          <article style={styles.panel}>
+            <p style={styles.label}>FIT</p>
+            <ul style={styles.ul}>
+              {result.fit.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </article>
+          <article style={{ ...styles.panel, ...styles.accentRose }}>
+            <p style={{ ...styles.label, color: '#be123c' }}>TRAP</p>
+            <ul style={{ ...styles.ul, color: '#881337' }}>
+              {result.trap.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </article>
+        </section>
 
-      <section className="rounded-[24px] border border-slate-200 bg-white p-5 shadow-sm">
-        <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <button
-            type="button"
-            onClick={handleShare}
-            className="rounded-full bg-slate-900 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-800"
-          >
-            結果をシェアする
-          </button>
-          <button
-            type="button"
-            onClick={onRetry}
-            className="rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
-          >
-            もう一度診断する
-          </button>
-        </div>
-      </section>
+        <section style={styles.panel}>
+          <div style={styles.actions}>
+            <button type="button" onClick={handleShare} style={styles.primaryButton}>
+              結果をシェアする
+            </button>
+            <button type="button" onClick={onRetry} style={styles.secondaryButton}>
+              もう一度診断する
+            </button>
+          </div>
+        </section>
 
-      <footer className="pb-4 pt-[30px] text-center text-[11px] font-normal text-slate-400">
-        Operated by{' '}
-        <a
-          href="https://www.mosaic-design.jp/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-slate-500 underline underline-offset-2 hover:text-slate-700"
-        >
-          Mosaic Design
-        </a>
-      </footer>
+        <footer style={styles.footer}>
+          Operated by{' '}
+          <a href="https://www.mosaic-design.jp/" target="_blank" rel="noopener noreferrer" style={styles.footerLink}>
+            Mosaic Design
+          </a>
+        </footer>
+      </div>
     </div>
   );
 }

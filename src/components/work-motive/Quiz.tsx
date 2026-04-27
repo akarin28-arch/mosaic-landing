@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
 import { ResultView } from '@/components/work-motive/ResultView';
 import { WORK_MOTIVE_QUESTIONS } from '@/lib/work-motive/questions';
 import { QuestionChoiceValue, WorkMotiveAnswers, WorkMotiveResult } from '@/lib/work-motive/types';
@@ -11,6 +11,255 @@ type SubmitResponse =
 
 const INTRO_TITLE = 'あなたはなぜ\n働いているのか？';
 const INTRO_DESCRIPTION = '23問の質問で\n「本音の動機構造」を炙り出します';
+const TRANSITION_MS = 180;
+
+const styles: Record<string, CSSProperties> = {
+  shell: {
+    minHeight: '100vh',
+    width: '100%',
+    background: 'radial-gradient(circle at top, #ecfdf5 0%, #f8fafc 45%, #f8fafc 100%)',
+  },
+  page: {
+    maxWidth: '960px',
+    margin: '0 auto',
+    padding: '32px 16px 20px',
+    minHeight: '100vh',
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  introWrap: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
+  card: {
+    width: '100%',
+    borderRadius: '32px',
+    border: '1px solid #d1fae5',
+    backgroundColor: '#ffffff',
+    padding: '40px 24px',
+    boxShadow: '0 12px 30px rgba(15, 23, 42, 0.08)',
+  },
+  eyebrow: {
+    margin: 0,
+    fontSize: '11px',
+    fontWeight: 800,
+    letterSpacing: '0.32em',
+    textTransform: 'uppercase',
+    color: '#059669',
+  },
+  title: {
+    margin: '16px 0 0',
+    whiteSpace: 'pre-line',
+    fontSize: 'clamp(32px, 6vw, 52px)',
+    lineHeight: 1.12,
+    fontWeight: 900,
+    letterSpacing: '-0.04em',
+    color: '#0f172a',
+  },
+  description: {
+    margin: '20px 0 0',
+    whiteSpace: 'pre-line',
+    fontSize: '15px',
+    lineHeight: 1.9,
+    color: '#475569',
+  },
+  helper: {
+    margin: '12px 0 0',
+    fontSize: '12px',
+    fontWeight: 700,
+    color: '#94a3b8',
+  },
+  primaryButton: {
+    marginTop: '28px',
+    border: 0,
+    borderRadius: '9999px',
+    backgroundColor: '#0f172a',
+    color: '#ffffff',
+    padding: '14px 24px',
+    fontSize: '14px',
+    fontWeight: 800,
+    cursor: 'pointer',
+    boxShadow: '0 10px 24px rgba(15, 23, 42, 0.16)',
+  },
+  topPanel: {
+    position: 'sticky',
+    top: 16,
+    zIndex: 10,
+    borderRadius: '24px',
+    border: '1px solid #e2e8f0',
+    backgroundColor: 'rgba(255,255,255,0.94)',
+    padding: '16px',
+    backdropFilter: 'blur(12px)',
+    boxShadow: '0 8px 20px rgba(15, 23, 42, 0.06)',
+  },
+  progressMeta: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    fontSize: '12px',
+    fontWeight: 800,
+    color: '#64748b',
+  },
+  progressBar: {
+    marginTop: '12px',
+    height: '8px',
+    overflow: 'hidden',
+    borderRadius: '9999px',
+    backgroundColor: '#e2e8f0',
+  },
+  questionCard: {
+    marginTop: '16px',
+    borderRadius: '28px',
+    border: '1px solid #e2e8f0',
+    backgroundColor: '#ffffff',
+    padding: '24px',
+    boxShadow: '0 12px 26px rgba(15, 23, 42, 0.06)',
+  },
+  questionTitle: {
+    margin: 0,
+    whiteSpace: 'pre-line',
+    fontSize: '24px',
+    lineHeight: 1.7,
+    fontWeight: 800,
+    color: '#0f172a',
+  },
+  options: {
+    marginTop: '20px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '12px',
+  },
+  optionButton: {
+    display: 'flex',
+    width: '100%',
+    alignItems: 'flex-start',
+    gap: '12px',
+    borderRadius: '18px',
+    border: '1px solid #cbd5e1',
+    backgroundColor: '#ffffff',
+    padding: '16px',
+    textAlign: 'left',
+    cursor: 'pointer',
+  },
+  optionButtonSelected: {
+    border: '1px solid #0f172a',
+    backgroundColor: '#0f172a',
+    color: '#ffffff',
+  },
+  choiceBadge: {
+    width: '28px',
+    height: '28px',
+    borderRadius: '9999px',
+    backgroundColor: '#f1f5f9',
+    color: '#64748b',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '12px',
+    fontWeight: 900,
+    flexShrink: 0,
+  },
+  choiceBadgeSelected: {
+    backgroundColor: 'rgba(255,255,255,0.16)',
+    color: '#ffffff',
+  },
+  optionText: {
+    fontSize: '15px',
+    lineHeight: 1.8,
+    fontWeight: 700,
+  },
+  numberInput: {
+    width: '100%',
+    borderRadius: '18px',
+    border: '1px solid #cbd5e1',
+    backgroundColor: '#f8fafc',
+    padding: '18px 16px',
+    textAlign: 'center',
+    fontSize: '30px',
+    fontWeight: 900,
+    color: '#0f172a',
+    outline: 'none',
+  },
+  inputHelper: {
+    margin: '8px 0 0',
+    textAlign: 'center',
+    fontSize: '12px',
+    fontWeight: 700,
+    color: '#94a3b8',
+  },
+  inputAction: {
+    marginTop: '10px',
+    display: 'block',
+    width: '100%',
+    border: 0,
+    background: 'transparent',
+    textAlign: 'center',
+    fontSize: '12px',
+    fontWeight: 700,
+    color: '#0f172a',
+    textDecoration: 'underline',
+    textUnderlineOffset: '3px',
+    cursor: 'pointer',
+  },
+  error: {
+    marginTop: '16px',
+    fontSize: '14px',
+    fontWeight: 700,
+    color: '#e11d48',
+  },
+  bottomActions: {
+    position: 'sticky',
+    bottom: 0,
+    display: 'flex',
+    gap: '12px',
+    marginTop: 'auto',
+    padding: '16px 0',
+    background: 'linear-gradient(180deg, rgba(248,250,252,0) 0%, rgba(248,250,252,0.92) 30%, rgba(248,250,252,1) 100%)',
+  },
+  secondaryButton: {
+    borderRadius: '9999px',
+    border: '1px solid #cbd5e1',
+    backgroundColor: '#ffffff',
+    color: '#334155',
+    padding: '14px 20px',
+    fontSize: '14px',
+    fontWeight: 800,
+    cursor: 'pointer',
+    boxShadow: '0 8px 20px rgba(15, 23, 42, 0.06)',
+  },
+  resetLink: {
+    marginLeft: 'auto',
+    alignSelf: 'center',
+    border: 0,
+    background: 'transparent',
+    padding: 0,
+    fontSize: '12px',
+    fontWeight: 400,
+    color: '#64748b',
+    textDecoration: 'underline',
+    textUnderlineOffset: '3px',
+    cursor: 'pointer',
+  },
+  footer: {
+    paddingTop: '30px',
+    paddingBottom: '16px',
+    textAlign: 'center',
+    fontSize: '11px',
+    fontWeight: 400,
+    color: '#94a3b8',
+  },
+  footerLink: {
+    color: '#64748b',
+    textDecoration: 'underline',
+    textUnderlineOffset: '2px',
+  },
+  fadeShell: {
+    transition: 'opacity 220ms ease, transform 220ms ease',
+    willChange: 'opacity, transform',
+  },
+};
 
 export function Quiz() {
   const [phase, setPhase] = useState<'intro' | 'quiz' | 'result'>('intro');
@@ -19,49 +268,86 @@ export function Quiz() {
   const [result, setResult] = useState<WorkMotiveResult | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isVisible, setIsVisible] = useState(true);
+  const transitionTimerRef = useRef<number | null>(null);
 
   const question = WORK_MOTIVE_QUESTIONS[currentIndex];
   const currentAnswer = answers[question?.id];
-  const progress = useMemo(
-    () => Math.round((currentIndex / WORK_MOTIVE_QUESTIONS.length) * 100),
-    [currentIndex],
-  );
+  const progress = useMemo(() => Math.round((currentIndex / WORK_MOTIVE_QUESTIONS.length) * 100), [currentIndex]);
 
   const setAnswer = (questionId: string, value: QuestionChoiceValue | number | undefined) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
   };
 
+  const runTransition = (callback: () => void) => {
+    setIsVisible(false);
+
+    if (transitionTimerRef.current) {
+      window.clearTimeout(transitionTimerRef.current);
+    }
+
+    transitionTimerRef.current = window.setTimeout(() => {
+      callback();
+      window.requestAnimationFrame(() => {
+        setIsVisible(true);
+      });
+    }, TRANSITION_MS);
+  };
+
+  const moveForward = (nextAnswers: WorkMotiveAnswers) => {
+    if (currentIndex === WORK_MOTIVE_QUESTIONS.length - 1) {
+      void handleSubmit(nextAnswers);
+      return;
+    }
+
+    runTransition(() => {
+      setCurrentIndex((prev) => prev + 1);
+    });
+  };
+
+  const handleChoiceAnswer = (questionId: string, value: QuestionChoiceValue) => {
+    const nextAnswers = { ...answers, [questionId]: value };
+    setAnswers(nextAnswers);
+    void moveForward(nextAnswers);
+  };
+
   const reset = () => {
-    setPhase('intro');
-    setCurrentIndex(0);
-    setAnswers({});
-    setResult(null);
-    setError(null);
+    runTransition(() => {
+      setPhase('intro');
+      setCurrentIndex(0);
+      setAnswers({});
+      setResult(null);
+      setError(null);
+    });
   };
 
   const footer = (
-    <footer className="pb-4 pt-[30px] text-center text-[11px] font-normal text-slate-400">
+    <footer style={styles.footer}>
       Operated by{' '}
-      <a
-        href="https://www.mosaic-design.jp/"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-slate-500 underline underline-offset-2 hover:text-slate-700"
-      >
+      <a href="https://www.mosaic-design.jp/" target="_blank" rel="noopener noreferrer" style={styles.footerLink}>
         Mosaic Design
       </a>
     </footer>
   );
 
-  const handleSubmit = async () => {
+  useEffect(() => {
+    return () => {
+      if (transitionTimerRef.current) {
+        window.clearTimeout(transitionTimerRef.current);
+      }
+    };
+  }, [phase, currentIndex]);
+
+  const handleSubmit = async (nextAnswers?: WorkMotiveAnswers) => {
     setSubmitting(true);
     setError(null);
 
     try {
+      const payloadAnswers = nextAnswers ?? answers;
       const response = await fetch('/api/work-motive/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ answers }),
+        body: JSON.stringify({ answers: payloadAnswers }),
       });
       const data = (await response.json()) as SubmitResponse;
 
@@ -70,8 +356,10 @@ export function Quiz() {
         return;
       }
 
-      setResult(data.result);
-      setPhase('result');
+      runTransition(() => {
+        setResult(data.result);
+        setPhase('result');
+      });
     } catch {
       setError('通信に失敗しました。時間をおいて再度お試しください。');
     } finally {
@@ -81,124 +369,163 @@ export function Quiz() {
 
   if (phase === 'result' && result) {
     const shareUrl = typeof window === 'undefined' ? '' : window.location.href;
-    return <ResultView result={result} shareUrl={shareUrl} onRetry={reset} />;
+    return (
+      <div
+        style={{
+          ...styles.fadeShell,
+          opacity: isVisible ? 1 : 0,
+          transform: isVisible ? 'translateY(0)' : 'translateY(10px)',
+        }}
+      >
+        <ResultView result={result} shareUrl={shareUrl} onRetry={reset} />
+      </div>
+    );
   }
 
   if (phase === 'intro') {
     return (
-      <div className="mx-auto flex min-h-screen max-w-3xl flex-col justify-center px-4 py-8 sm:px-6">
-        <div className="w-full rounded-[32px] border border-emerald-100 bg-white px-6 py-10 shadow-sm sm:px-10">
-          <p className="text-[11px] font-bold uppercase tracking-[0.32em] text-emerald-600">WORK MOTIVE DIAGNOSTIC</p>
-          <h1 className="mt-4 whitespace-pre-line text-3xl font-black tracking-tight text-slate-900 sm:text-4xl">
-            {INTRO_TITLE}
-          </h1>
-          <p className="mt-5 whitespace-pre-line text-sm leading-7 text-slate-600">{INTRO_DESCRIPTION}</p>
-          <p className="mt-3 text-xs font-semibold text-slate-400">所要時間：約3〜5分</p>
-          <button
-            type="button"
-            onClick={() => setPhase('quiz')}
-            className="mt-8 rounded-full bg-slate-900 px-6 py-3 text-sm font-bold text-white transition hover:bg-slate-800"
-          >
-            診断をはじめる
-          </button>
+      <div
+        style={{
+          ...styles.shell,
+          ...styles.fadeShell,
+          opacity: isVisible ? 1 : 0,
+          transform: isVisible ? 'translateY(0)' : 'translateY(10px)',
+        }}
+      >
+        <div style={{ ...styles.page, ...styles.introWrap }}>
+          <div style={styles.card}>
+            <p style={styles.eyebrow}>WORK MOTIVE DIAGNOSTIC</p>
+            <h1 style={styles.title}>{INTRO_TITLE}</h1>
+            <p style={styles.description}>{INTRO_DESCRIPTION}</p>
+            <p style={styles.helper}>所要時間：約3〜5分</p>
+            <button type="button" onClick={() => runTransition(() => setPhase('quiz'))} style={styles.primaryButton}>
+              診断をはじめる
+            </button>
+          </div>
+          {footer}
         </div>
-        {footer}
       </div>
     );
   }
 
   const isAnswered = currentAnswer !== undefined;
+  const canAdvanceNumber = question.num && typeof currentAnswer === 'number';
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-3xl flex-col px-4 py-4 sm:px-6">
-      <div className="sticky top-0 z-10 rounded-[24px] border border-slate-200 bg-white/95 px-4 py-4 backdrop-blur">
-        <div className="flex items-center justify-between text-xs font-bold text-slate-500">
-          <span>
-            Q{currentIndex + 1} / {WORK_MOTIVE_QUESTIONS.length}
-          </span>
-          <span>{progress}%</span>
+    <div
+      style={{
+        ...styles.shell,
+        ...styles.fadeShell,
+        opacity: isVisible ? 1 : 0,
+        transform: isVisible ? 'translateY(0)' : 'translateY(10px)',
+      }}
+    >
+      <div style={styles.page}>
+        <div style={styles.topPanel}>
+          <div style={styles.progressMeta}>
+            <span>
+              Q{currentIndex + 1} / {WORK_MOTIVE_QUESTIONS.length}
+            </span>
+            <span>{progress}%</span>
+          </div>
+          <div style={styles.progressBar}>
+            <div
+              style={{
+                height: '100%',
+                width: `${progress}%`,
+                borderRadius: '9999px',
+                backgroundColor: '#10b981',
+                transition: 'width 180ms ease',
+              }}
+            />
+          </div>
         </div>
-        <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
-          <div className="h-full rounded-full bg-emerald-500 transition-all" style={{ width: `${progress}%` }} />
-        </div>
-      </div>
 
-      <div className="mt-4 rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-        <h2 className="whitespace-pre-line text-lg font-bold leading-8 text-slate-900">{question.text}</h2>
-        <div className="mt-5 space-y-3">
-          {question.num ? (
-            <div>
-              <input
-                type="number"
-                min={0}
-                inputMode="numeric"
-                value={typeof currentAnswer === 'number' ? currentAnswer : ''}
-                onChange={(event) => {
-                  const nextValue = Number.parseInt(event.target.value, 10);
-                  setAnswer(question.id, Number.isNaN(nextValue) ? undefined : nextValue);
-                }}
-                className="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 text-center text-2xl font-black text-slate-900 outline-none transition focus:border-emerald-400 focus:bg-white"
-                placeholder="人数を入力"
-              />
-              <p className="mt-2 text-center text-xs font-semibold text-slate-400">0人でも入力できます</p>
-            </div>
-          ) : (
-            question.ch.map(([choice, label]) => {
-              const selected = currentAnswer === choice;
-              return (
-                <button
-                  key={choice}
-                  type="button"
-                  onClick={() => setAnswer(question.id, choice)}
-                  className={`flex w-full items-start gap-3 rounded-2xl border px-4 py-4 text-left transition ${
-                    selected
-                      ? 'border-slate-900 bg-slate-900 text-white'
-                      : 'border-slate-200 bg-white text-slate-800 hover:border-emerald-300 hover:bg-emerald-50'
-                  }`}
-                >
-                  <span
-                    className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-black ${
-                      selected ? 'bg-white/15 text-white' : 'bg-slate-100 text-slate-500'
-                    }`}
+        <div style={styles.questionCard}>
+          <h2 style={styles.questionTitle}>{question.text}</h2>
+          <div style={styles.options}>
+            {question.num ? (
+              <div>
+                <input
+                  type="number"
+                  min={0}
+                  inputMode="numeric"
+                  value={typeof currentAnswer === 'number' ? currentAnswer : ''}
+                  onChange={(event) => {
+                    const nextValue = Number.parseInt(event.target.value, 10);
+                    setAnswer(question.id, Number.isNaN(nextValue) ? undefined : nextValue);
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key !== 'Enter') return;
+                    event.preventDefault();
+                    if (typeof currentAnswer !== 'number') return;
+                    const nextAnswers = { ...answers, [question.id]: currentAnswer };
+                    setAnswers(nextAnswers);
+                    moveForward(nextAnswers);
+                  }}
+                  style={styles.numberInput}
+                  placeholder="人数を入力"
+                />
+                <p style={styles.inputHelper}>0人でも入力できます。入力後 Enter で次へ進みます。</p>
+                {canAdvanceNumber && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const nextAnswers = { ...answers, [question.id]: currentAnswer };
+                      setAnswers(nextAnswers);
+                      moveForward(nextAnswers);
+                    }}
+                    style={styles.inputAction}
                   >
-                    {choice}
-                  </span>
-                  <span className="text-sm font-semibold leading-7">{label}</span>
-                </button>
-              );
-            })
-          )}
+                    入力内容で進む
+                  </button>
+                )}
+              </div>
+            ) : (
+              question.ch.map(([choice, label]) => {
+                const selected = currentAnswer === choice;
+                return (
+                  <button
+                    key={choice}
+                    type="button"
+                    onClick={() => handleChoiceAnswer(question.id, choice)}
+                    style={{
+                      ...styles.optionButton,
+                      ...(selected ? styles.optionButtonSelected : {}),
+                    }}
+                  >
+                    <span style={{ ...styles.choiceBadge, ...(selected ? styles.choiceBadgeSelected : {}) }}>{choice}</span>
+                    <span style={styles.optionText}>{label}</span>
+                  </button>
+                );
+              })
+            )}
+          </div>
         </div>
-      </div>
 
-      {error && <p className="mt-4 text-sm font-semibold text-rose-600">{error}</p>}
+        {error && <p style={styles.error}>{error}</p>}
 
-      <div className="sticky bottom-0 mt-auto flex gap-3 py-4">
-        {currentIndex > 0 && (
-          <button
-            type="button"
-            onClick={() => setCurrentIndex((prev) => prev - 1)}
-            className="rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50"
-          >
-            戻る
+        <div style={styles.bottomActions}>
+          {currentIndex > 0 && (
+            <button
+              type="button"
+              onClick={() =>
+                runTransition(() => {
+                  setCurrentIndex((prev) => prev - 1);
+                })
+              }
+              style={styles.secondaryButton}
+            >
+              戻る
+            </button>
+          )}
+          {submitting && <span style={{ alignSelf: 'center', fontSize: '12px', fontWeight: 700, color: '#64748b' }}>診断中...</span>}
+          <button type="button" onClick={reset} style={styles.resetLink}>
+            最初からやり直す
           </button>
-        )}
-        <button
-          type="button"
-          disabled={!isAnswered || submitting}
-          onClick={() => {
-            if (currentIndex === WORK_MOTIVE_QUESTIONS.length - 1) {
-              void handleSubmit();
-              return;
-            }
-            setCurrentIndex((prev) => prev + 1);
-          }}
-          className="flex-1 rounded-full bg-slate-900 px-5 py-3 text-sm font-bold text-white shadow-sm transition disabled:cursor-not-allowed disabled:bg-slate-300"
-        >
-          {submitting ? '診断中...' : currentIndex === WORK_MOTIVE_QUESTIONS.length - 1 ? '結果を見る' : '次へ'}
-        </button>
+        </div>
+        {footer}
       </div>
-      {footer}
     </div>
   );
 }
