@@ -103,7 +103,9 @@ function DonutChart({ items, centerLabel }: { items: ChartItem[]; centerLabel: s
                 <span style={{ width: '10px', height: '10px', borderRadius: '9999px', backgroundColor: item.color }} />
                 <span style={{ fontSize: '14px', fontWeight: 700, color: '#334155' }}>{item.label}</span>
               </div>
-              <span style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a' }}>{item.value}</span>
+              <span style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a' }}>
+                {item.value} / {total > 0 ? Math.round((item.value / total) * 100) : 0}%
+              </span>
             </div>
           ))}
         </div>
